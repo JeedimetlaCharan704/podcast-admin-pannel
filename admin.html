@@ -520,10 +520,6 @@
   </div>
 </div>
 
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-<script src="firebase-init.js"></script>
 <script>
   const ADMIN_EMAIL = "admin@aurora.edu.in";
   const ADMIN_PASSWORD = "AuroraAdmin@2026"; // Change this!
@@ -588,22 +584,10 @@
       singleDevice: true // One key = one device
     };
 
-    // Store in localStorage
+    // Store in localStorage only (Firebase disabled)
     const keys = JSON.parse(localStorage.getItem('aurora_keys') || '[]');
     keys.unshift(keyData);
     localStorage.setItem('aurora_keys', JSON.stringify(keys));
-
-    // Also save to Firebase for cloud sync
-    try {
-      const keysRef = firebase.database().ref('keys').push();
-      keysRef.set(keyData).then(() => {
-        console.log('Key saved to Firebase');
-      }).catch((e) => {
-        console.log('Firebase save failed, using local only');
-      });
-    } catch(e) {
-      console.log('Firebase not available');
-    }
 
     // Show generated key
     document.getElementById('newKeyCode').textContent = key;
@@ -669,15 +653,6 @@
       let keys = JSON.parse(localStorage.getItem('aurora_keys') || '[]');
       keys = keys.filter(k => k.key !== key);
       localStorage.setItem('aurora_keys', JSON.stringify(keys));
-      
-      // Also delete from Firebase
-      try {
-        firebase.database().ref('keys').orderByChild('key').equalTo(key).once('value', (snapshot) => {
-          snapshot.forEach((child) => {
-            firebase.database().ref('keys/' + child.key).remove();
-          });
-        });
-      } catch(e) {}
       
       showToast('Key deleted', 'success');
       loadStats();
