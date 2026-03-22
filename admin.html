@@ -5,8 +5,13 @@
   <title>Admin Panel - Aurora Podcast</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="theme-color" content="#1e3a5f">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+<script src="firebase-init.js"></script>
+<style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     
     :root {
@@ -390,7 +395,10 @@
       </div>
     </div>
     <div class="header-actions">
-      <button class="btn btn-primary" onclick="showGenerateModal()">
+      <button class="btn btn-primary" onclick="showUpdateModal()" style="background: linear-gradient(135deg, #10b981, #059669);">
+        📢 Push Update
+      </button>
+      <button class="btn" style="background: rgba(255,255,255,0.2); color: white;" onclick="showGenerateModal()">
         ➕ Generate Key
       </button>
       <button class="btn btn-danger" onclick="logout()">
@@ -443,6 +451,7 @@
           <option value="24">24 Hours</option>
           <option value="48">2 Days</option>
           <option value="168">1 Week</option>
+          <option value="720">1 Month</option>
         </select>
       </div>
 
@@ -493,6 +502,18 @@
         </table>
       </div>
     </div>
+
+    <!-- Podcast Management -->
+    <div class="card" style="margin-top: 24px;">
+      <div class="card-header">
+        <h2 class="card-title">🎙️ Manage Podcasts</h2>
+        <button class="btn btn-primary" style="padding: 8px 16px;" onclick="showAddPodcastModal()">+ Add Podcast</button>
+      </div>
+      
+      <div id="podcastsList">
+        <div class="loading-podcasts">Loading podcasts...</div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -511,6 +532,8 @@
         <option value="2">2 Hours</option>
         <option value="4">4 Hours</option>
         <option value="24">24 Hours</option>
+        <option value="168">1 Week</option>
+        <option value="720">1 Month</option>
       </select>
     </div>
     <div style="display: flex; gap: 10px;">
@@ -520,9 +543,91 @@
   </div>
 </div>
 
+<!-- Add Podcast Modal -->
+<div id="podcastModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 9999; align-items: center; justify-content: center; overflow-y: auto;">
+  <div style="background: white; border-radius: 20px; padding: 30px; max-width: 500px; width: 90%; margin: 20px;">
+    <h2 style="margin-bottom: 20px; color: var(--primary);">🎙️ Add New Podcast</h2>
+    <div class="form-group">
+      <label>Title *</label>
+      <input type="text" id="podcastTitle" placeholder="e.g., Mid-Term Results Announcement">
+    </div>
+    <div class="form-group">
+      <label>Description</label>
+      <textarea id="podcastDesc" placeholder="Brief description" rows="2"></textarea>
+    </div>
+    <div class="form-group">
+      <label>Source *</label>
+      <input type="text" id="podcastSource" placeholder="e.g., Admin Office, Exam Cell">
+    </div>
+    <div class="form-group">
+      <label>Category *</label>
+      <select id="podcastCategory">
+        <option value="new">📢 New</option>
+        <option value="academic">📚 Academic</option>
+        <option value="events">🎉 Events</option>
+        <option value="career">💼 Career</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Icon</label>
+      <select id="podcastIcon">
+        <option value="📢">📢 Announcement</option>
+        <option value="📋">📋 Notice</option>
+        <option value="💼">💼 Career</option>
+        <option value="📚">📚 Academic</option>
+        <option value="🎉">🎉 Event</option>
+        <option value="🎙️">🎙️ Podcast</option>
+        <option value="📖">📖 Study</option>
+        <option value="🏆">🏆 Achievement</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Audio File</label>
+      <div style="display: flex; gap: 10px; align-items: center;">
+        <input type="file" id="audioFileInput" accept="audio/*" onchange="handleAudioFileSelect(event)" style="flex: 1;">
+        <input type="text" id="podcastAudio" placeholder="Or paste URL here" style="flex: 1;">
+      </div>
+      <div id="audioUploadProgress" style="display: none; margin-top: 10px;">
+        <div style="background: #e2e8f0; border-radius: 8px; height: 8px; overflow: hidden;">
+          <div id="audioProgressBar" style="background: linear-gradient(90deg, #6366f1, #8b5cf6); height: 100%; width: 0%; transition: width 0.3s;"></div>
+        </div>
+        <p id="audioUploadStatus" style="font-size: 12px; color: var(--text-light); margin-top: 5px;">Uploading...</p>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Time Display</label>
+      <input type="text" id="podcastTime" placeholder="e.g., 5 min ago, 1 day ago">
+    </div>
+    <div style="display: flex; gap: 10px; margin-top: 20px;">
+      <button class="btn btn-primary" style="flex: 1;" onclick="savePodcast()">💾 Save Podcast</button>
+      <button class="btn" style="background: #e2e8f0; flex: 1;" onclick="closePodcastModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Push Update Modal -->
+<div id="updateModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center;">
+  <div style="background: white; border-radius: 20px; padding: 30px; max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto;">
+    <h2 style="color: var(--primary); margin-bottom: 20px;">🔔 Push Update to All Users</h2>
+    <p style="color: var(--text-light); font-size: 13px; margin-bottom: 20px;">This will show a notification to ALL app users. Use this to announce important updates, new features, or maintenance notices.</p>
+    <div class="form-group">
+      <label>New Version Number</label>
+      <input type="text" id="updateVersion" placeholder="e.g., 5.1">
+    </div>
+    <div class="form-group">
+      <label>Update Message</label>
+      <textarea id="updateMessage" rows="3" placeholder="What's new? e.g., 'New episodes added! Check out the latest content.'" style="width: 100%; padding: 12px; border: 2px solid var(--border); border-radius: 12px; font-size: 14px; font-family: inherit; resize: vertical;"></textarea>
+    </div>
+    <div style="display: flex; gap: 10px; margin-top: 20px;">
+      <button class="btn btn-primary" style="flex: 1;" onclick="pushUpdate()">📢 Push Update</button>
+      <button class="btn" style="background: #e2e8f0; flex: 1;" onclick="closeUpdateModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
 <script>
-  const ADMIN_EMAIL = "admin@aurora.edu.in";
-  const ADMIN_PASSWORD = "AuroraAdmin@2026"; // Change this!
+  const ADMIN_EMAIL = "charan.jeedimetla@aurora.edu.in";
+  const ADMIN_PASSWORD = "Charan@123";
 
   // Check if admin logged in
   let currentUser = null;
@@ -580,21 +685,33 @@
       maxUses: maxUses,
       uses: 0,
       active: true,
-      deviceId: null, // Will be set when used
-      singleDevice: true // One key = one device
+      deviceId: null,
+      singleDevice: true
     };
 
-    // Store in localStorage only (Firebase disabled)
+    // Store in localStorage
     const keys = JSON.parse(localStorage.getItem('aurora_keys') || '[]');
     keys.unshift(keyData);
     localStorage.setItem('aurora_keys', JSON.stringify(keys));
 
+    // Also try to store in Firebase
+    try {
+      if (typeof db !== 'undefined' && db) {
+        db.ref('keys').push(keyData);
+        showToast('Key generated and saved to Firebase!', 'success');
+      } else {
+        showToast('Key generated (Firebase not connected)', 'success');
+      }
+    } catch(e) {
+      showToast('Key generated (saved locally)', 'success');
+    }
+
     // Show generated key
     document.getElementById('newKeyCode').textContent = key;
-    document.getElementById('keyExpiryText').textContent = `Expires in: ${hours} hour(s) | One device only`;
+    const expiryText = hours >= 720 ? '1 month' : `${hours} hour(s)`;
+    document.getElementById('keyExpiryText').textContent = `Expires in: ${expiryText} | One device only`;
     document.getElementById('generatedKey').classList.add('show');
 
-    showToast('Key generated successfully! (Device-bound)', 'success');
     loadStats();
     loadKeys();
 
@@ -713,6 +830,240 @@
     document.body.appendChild(toast);
     
     setTimeout(() => toast.remove(), 3000);
+  }
+
+  // ==================== PODCAST MANAGEMENT ====================
+  
+  function showAddPodcastModal() {
+    document.getElementById('podcastModal').style.display = 'flex';
+  }
+
+  function closePodcastModal() {
+    document.getElementById('podcastModal').style.display = 'none';
+  }
+
+  function savePodcast() {
+    const title = document.getElementById('podcastTitle').value.trim();
+    const source = document.getElementById('podcastSource').value.trim();
+    const category = document.getElementById('podcastCategory').value;
+    const icon = document.getElementById('podcastIcon').value;
+    const audio = document.getElementById('podcastAudio').value.trim();
+    const desc = document.getElementById('podcastDesc').value.trim();
+    const time = document.getElementById('podcastTime').value.trim() || 'Just now';
+
+    if (!title || !source) {
+      showToast('Please fill in required fields (Title and Source)', 'error');
+      return;
+    }
+
+    const podcast = {
+      title: title,
+      description: desc,
+      source: source,
+      category: category,
+      icon: icon,
+      audio: audio || 'upcoming.mp3',
+      time: time,
+      createdAt: Date.now()
+    };
+
+    // Save to localStorage (for demo/fallback)
+    const podcasts = JSON.parse(localStorage.getItem('aurora_podcasts') || '[]');
+    podcasts.push(podcast);
+    localStorage.setItem('aurora_podcasts', JSON.stringify(podcasts));
+
+    // Save to Firebase Firestore
+    if (typeof FirebaseService !== 'undefined') {
+      FirebaseService.addEpisode({
+        title: title,
+        description: desc,
+        source: source,
+        category: category,
+        file: audio || 'upcoming.mp3',
+        duration: time,
+        date: new Date().toISOString().split('T')[0]
+      }).then(function(success) {
+        if (success) {
+          showToast('Podcast saved to Firebase!', 'success');
+        } else {
+          showToast('Podcast saved locally', 'success');
+        }
+      });
+    } else {
+      showToast('Podcast saved locally', 'success');
+    }
+
+    // Clear form and close
+    document.getElementById('podcastTitle').value = '';
+    document.getElementById('podcastDesc').value = '';
+    document.getElementById('podcastSource').value = '';
+    document.getElementById('podcastAudio').value = '';
+    document.getElementById('podcastTime').value = '';
+    closePodcastModal();
+    loadPodcasts();
+  }
+
+  // Audio file upload using Firebase Storage
+  let selectedAudioFile = null;
+  
+  function handleAudioFileSelect(event) {
+    const file = event.target.files[0];
+    if (file) {
+      if (!file.type.startsWith('audio/')) {
+        showToast('Please select an audio file', 'error');
+        return;
+      }
+      if (file.size > 50 * 1024 * 1024) { // 50MB limit
+        showToast('File too large. Max 50MB allowed', 'error');
+        return;
+      }
+      selectedAudioFile = file;
+      document.getElementById('podcastAudio').value = file.name + ' (Uploading...)';
+      uploadAudioFile(file);
+    }
+  }
+  
+  function uploadAudioFile(file) {
+    const progressDiv = document.getElementById('audioUploadProgress');
+    const progressBar = document.getElementById('audioProgressBar');
+    const statusText = document.getElementById('audioUploadStatus');
+    
+    progressDiv.style.display = 'block';
+    progressBar.style.width = '0%';
+    statusText.textContent = 'Preparing upload...';
+    
+    // Create storage reference
+    const storageRef = firebase.storage().ref();
+    const fileName = 'audios/' + Date.now() + '_' + file.name.replace(/[^a-zA-Z0-9.]/g, '_');
+    const audioRef = storageRef.child(fileName);
+    
+    // Upload task
+    const uploadTask = audioRef.put(file);
+    
+    uploadTask.on('state_changed', 
+      function(snapshot) {
+        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        progressBar.style.width = progress + '%';
+        statusText.textContent = 'Uploading... ' + Math.round(progress) + '%';
+      },
+      function(error) {
+        progressDiv.style.display = 'none';
+        showToast('Upload failed: ' + error.message, 'error');
+        document.getElementById('podcastAudio').value = '';
+        selectedAudioFile = null;
+      },
+      function() {
+        uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
+          progressBar.style.width = '100%';
+          statusText.textContent = 'Upload complete!';
+          document.getElementById('podcastAudio').value = downloadURL;
+          setTimeout(function() {
+            progressDiv.style.display = 'none';
+          }, 1500);
+          showToast('Audio uploaded successfully!', 'success');
+        });
+      }
+    );
+  }
+
+  function loadPodcasts() {
+    const container = document.getElementById('podcastsList');
+    
+    // Try Firebase Firestore
+    if (typeof FirebaseService !== 'undefined') {
+      FirebaseService.getEpisodes().then(function(podcasts) {
+        renderPodcastsList(podcasts);
+      }).catch(function(e) {
+        console.log('Firebase error:', e);
+        const podcasts = JSON.parse(localStorage.getItem('aurora_podcasts') || '[]');
+        renderPodcastsList(podcasts);
+      });
+    } else {
+      // Fallback to localStorage
+      const podcasts = JSON.parse(localStorage.getItem('aurora_podcasts') || '[]');
+      renderPodcastsList(podcasts);
+    }
+  }
+
+  function renderPodcastsList(podcasts) {
+    const container = document.getElementById('podcastsList');
+    
+    if (podcasts.length === 0) {
+      container.innerHTML = '<div class="empty-state">No podcasts yet. Click "Add Podcast" to create one.</div>';
+      return;
+    }
+
+    container.innerHTML = podcasts.map(p => `
+      <div class="episode-item" style="background: var(--bg); margin-bottom: 10px; border-radius: 12px; padding: 12px;">
+        <div style="font-size: 28px;">${p.icon || '🎙️'}</div>
+        <div style="flex: 1;">
+          <h4 style="margin: 0; font-size: 14px;">${p.title}</h4>
+          <p style="margin: 4px 0 0; font-size: 12px; color: var(--text-light);">${p.source} • ${p.time}</p>
+          <span style="font-size: 10px; background: var(--secondary); color: white; padding: 2px 8px; border-radius: 10px;">${p.category}</span>
+        </div>
+        <button onclick="deletePodcast('${p.id}')" style="background: var(--danger); color: white; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer;">🗑️</button>
+      </div>
+    `).join('');
+  }
+
+  function deletePodcast(id) {
+    if (!confirm('Are you sure you want to delete this podcast?')) return;
+    
+    // Delete from Firebase Firestore
+    if (typeof FirebaseService !== 'undefined') {
+      FirebaseService.deleteDocument('episodes', id);
+    }
+    
+    // Remove from localStorage
+    let podcasts = JSON.parse(localStorage.getItem('aurora_podcasts') || '[]');
+    podcasts = podcasts.filter((p, i) => String(i) !== String(id));
+    localStorage.setItem('aurora_podcasts', JSON.stringify(podcasts));
+    
+    showToast('Podcast deleted', 'success');
+    loadPodcasts();
+  }
+
+  // Load podcasts on page load
+  loadPodcasts();
+
+  // ==================== APP UPDATE SYSTEM ====================
+  function showUpdateModal() {
+    document.getElementById('updateModal').style.display = 'flex';
+  }
+
+  function closeUpdateModal() {
+    document.getElementById('updateModal').style.display = 'none';
+  }
+
+  function pushUpdate() {
+    const version = document.getElementById('updateVersion').value.trim();
+    const message = document.getElementById('updateMessage').value.trim();
+    
+    if (!version || !message) {
+      showToast('Please fill in both version and message', 'error');
+      return;
+    }
+    
+    const updateData = {
+      version: version,
+      message: message,
+      pushedAt: Date.now(),
+      pushedBy: 'Admin'
+    };
+    
+    // Save to Firebase
+    if (typeof db !== 'undefined') {
+      db.ref('appUpdates/latest').set(updateData).then(function() {
+        showToast('Update pushed to all users!', 'success');
+        document.getElementById('updateVersion').value = '';
+        document.getElementById('updateMessage').value = '';
+        closeUpdateModal();
+      }).catch(function(e) {
+        showToast('Failed to push update: ' + e.message, 'error');
+      });
+    } else {
+      showToast('Firebase not available', 'error');
+    }
   }
 </script>
 
