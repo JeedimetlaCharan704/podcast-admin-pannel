@@ -1,0 +1,174 @@
+{
+  "episodes": [
+    {
+      "id": 1,
+      "title": "AUTO EXPO 🏍️",
+      "description": "Auto Expo 2026 - Bikes, cars & thrilling auto showcase",
+      "source": "Events Committee",
+      "file": "AUDIOS/AUTO EXPO MAR25.mpeg",
+      "date": "2026-03-25",
+      "duration": "10 min",
+      "category": "events"
+    },
+    {
+      "id": 2,
+      "title": "ANVITHI 2026 💥",
+      "description": "Latest mid-term examination results announced",
+      "source": "Admin Office",
+      "file": "AUDIOS/ANVITHI2026.mpeg",
+      "date": "2026-03-24",
+      "duration": "5 min",
+      "category": "announcement"
+    },
+    {
+      "id": 3,
+      "title": "SANGAMA SUCCESS 🎉",
+      "description": "Important guidelines for upcoming exams",
+      "source": "Exam Cell",
+      "file": "AUDIOS/SANGAMASUCCESS.mpeg",
+      "date": "2026-03-23",
+      "duration": "8 min",
+      "category": "academic"
+    },
+    {
+      "id": 4,
+      "title": "SANGAMA 2026",
+      "description": "The Pulse of Talent - Exciting competitions & performances",
+      "source": "Events Committee",
+      "file": "AUDIOS/SANGAMA.mpeg",
+      "date": "2026-03-22",
+      "duration": "12 min",
+      "category": "events"
+    },
+    {
+      "id": 5,
+      "title": "Rules and Regulations",
+      "description": "Updated college rules and regulations",
+      "source": "Admin Office",
+      "file": "AUDIOS/rules.mp3",
+      "date": "2026-03-21",
+      "duration": "6 min",
+      "category": "announcement"
+    }
+  ],
+  "playlists": [
+    {
+      "id": 1,
+      "name": "Favorites",
+      "icon": "❤️",
+      "description": "Your favorite episodes"
+    },
+    {
+      "id": 2,
+      "name": "Study Material",
+      "icon": "📚",
+      "description": "Academic content"
+    },
+    {
+      "id": 3,
+      "name": "Announcements",
+      "icon": "📢",
+      "description": "Important college announcements"
+    },
+    {
+      "id": 4,
+      "name": "Placement",
+      "icon": "💼",
+      "description": "Career and placement updates"
+    }
+  ],
+  "events": [
+    {
+      "id": 1,
+      "title": "SANGAMA 2026 – The Pulse of Talent",
+      "description": "Exciting competitions, performances & talent showcase",
+      "date": "2026-03-24",
+      "time": "9:00 AM",
+      "location": "University Campus",
+      "category": "events"
+    },
+    {
+      "id": 2,
+      "title": "ANVITHI 💥 – National Level Management Fest",
+      "description": "Business games, quizzes & creative challenges",
+      "date": "2026-03-24",
+      "time": "10:00 AM",
+      "location": "Aurora University",
+      "category": "events"
+    },
+    {
+      "id": 3,
+      "title": "VELOCITAX – Auto Expo 2026 🏍️",
+      "description": "Bikes, cars & thrilling auto showcase",
+      "date": "2026-03-25",
+      "time": "12:00 PM",
+      "location": "Aurora Campus",
+      "category": "events"
+    },
+    {
+      "id": 4,
+      "title": "Placement Drive",
+      "description": "Top companies like TCS, Infosys & more hiring opportunities",
+      "date": "2026-04-05",
+      "time": "9:00 AM",
+      "location": "Placement Cell",
+      "category": "career"
+    },
+    {
+      "id": 5,
+      "title": "Hackathon 2026",
+      "description": "Coding challenges, innovation & tech solutions",
+      "date": "2026-04-12",
+      "time": "10:00 AM",
+      "location": "Computer Labs",
+      "category": "technical"
+    }
+  ],
+  "notifications": [
+    {
+      "id": 1,
+      "title": "Mid-Term Results Published",
+      "description": "Check your results in the student portal",
+      "source": "Admin Office",
+      "time": "5 min ago",
+      "type": "alert",
+      "read": false
+    },
+    {
+      "id": 2,
+      "title": "New Episode: SANGAMA 2026",
+      "description": "Listen to exciting event highlights",
+      "source": "Campus Chronicles",
+      "time": "1 hour ago",
+      "type": "podcast",
+      "read": false
+    },
+    {
+      "id": 3,
+      "title": "Workshop Tomorrow",
+      "description": "Career guidance workshop tomorrow at 2 PM",
+      "source": "Career Cell",
+      "time": "2 hours ago",
+      "type": "event",
+      "read": false
+    },
+    {
+      "id": 4,
+      "title": "Placement Drive 2026",
+      "description": "Multiple companies visiting this month",
+      "source": "Placement Cell",
+      "time": "1 day ago",
+      "type": "info",
+      "read": true
+    },
+    {
+      "id": 5,
+      "title": "Fee Payment Deadline",
+      "description": "Last date for fee payment is approaching",
+      "source": "Accounts Dept",
+      "time": "4 days ago",
+      "type": "warning",
+      "read": true
+    }
+  ]
+}
