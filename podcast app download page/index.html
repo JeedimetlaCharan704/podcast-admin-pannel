@@ -21,9 +21,10 @@
         }
 
         body {
-            background: #ffffff;
+            background: #0a0a1a;
             min-height: 100vh;
             color: var(--text-dark);
+            overflow-x: hidden;
         }
 
         .header {
@@ -31,7 +32,13 @@
             justify-content: space-between;
             align-items: center;
             padding: 20px 40px;
-            background: var(--light-blue);
+            background: rgba(10, 10, 26, 0.9);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(0, 102, 204, 0.2);
         }
 
         .logo {
@@ -50,12 +57,21 @@
             justify-content: center;
             font-size: 28px;
             color: white;
+            animation: logoGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes logoGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(0, 102, 204, 0.5); }
+            50% { box-shadow: 0 0 40px rgba(0, 153, 255, 0.8); }
         }
 
         .logo-text {
             font-size: 24px;
             font-weight: bold;
-            color: var(--primary-blue);
+            background: linear-gradient(90deg, #fff, #00bfff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .social-links {
@@ -66,18 +82,35 @@
         .social-links a {
             width: 40px;
             height: 40px;
-            background: var(--primary-blue);
+            background: linear-gradient(135deg, var(--primary-blue), #0099ff);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             text-decoration: none;
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .social-links a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .social-links a:hover::before {
+            left: 100%;
         }
 
         .social-links a:hover {
-            background: var(--dark-blue);
-            transform: translateY(-3px);
+            transform: translateY(-3px) scale(1.1);
+            box-shadow: 0 10px 30px rgba(0, 102, 204, 0.5);
         }
 
         .social-links svg {
@@ -85,137 +118,467 @@
         }
 
         .hero {
+            position: relative;
             text-align: center;
-            padding: 80px 20px;
-            background: linear-gradient(180deg, var(--light-blue) 0%, #ffffff 100%);
+            padding: 160px 20px 100px;
+            background: linear-gradient(180deg, #0a0a1a 0%, #0d1525 50%, #0a0a1a 100%);
+            overflow: hidden;
+        }
+
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #00bfff;
+            border-radius: 50%;
+            opacity: 0;
+            animation: particleFloat 8s infinite;
+        }
+
+        .particle:nth-child(1) { left: 10%; animation-delay: 0s; }
+        .particle:nth-child(2) { left: 20%; animation-delay: 1s; }
+        .particle:nth-child(3) { left: 30%; animation-delay: 2s; }
+        .particle:nth-child(4) { left: 40%; animation-delay: 0.5s; }
+        .particle:nth-child(5) { left: 50%; animation-delay: 1.5s; }
+        .particle:nth-child(6) { left: 60%; animation-delay: 2.5s; }
+        .particle:nth-child(7) { left: 70%; animation-delay: 0.8s; }
+        .particle:nth-child(8) { left: 80%; animation-delay: 1.8s; }
+        .particle:nth-child(9) { left: 90%; animation-delay: 3s; }
+        .particle:nth-child(10) { left: 15%; animation-delay: 2.2s; }
+        .particle:nth-child(11) { left: 25%; animation-delay: 0.3s; }
+        .particle:nth-child(12) { left: 35%; animation-delay: 1.2s; }
+        .particle:nth-child(13) { left: 45%; animation-delay: 2.8s; }
+        .particle:nth-child(14) { left: 55%; animation-delay: 0.7s; }
+        .particle:nth-child(15) { left: 65%; animation-delay: 1.7s; }
+        .particle:nth-child(16) { left: 75%; animation-delay: 2.4s; }
+        .particle:nth-child(17) { left: 85%; animation-delay: 0.9s; }
+        .particle:nth-child(18) { left: 95%; animation-delay: 1.9s; }
+
+        .particle::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, rgba(0, 191, 255, 0.4) 0%, transparent 70%);
+            transform: translate(-50%, -50%);
+            animation: particleGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes particleFloat {
+            0% {
+                transform: translateY(100vh) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) scale(1);
+                opacity: 0;
+            }
+        }
+
+        @keyframes particleGlow {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+            50% { transform: translate(-50%, -50%) scale(1.5); opacity: 1; }
+        }
+
+        .glow-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.3;
+            animation: orbFloat 6s ease-in-out infinite;
+        }
+
+        .glow-orb:nth-child(1) {
+            width: 400px;
+            height: 400px;
+            background: #0066cc;
+            top: 10%;
+            left: -10%;
+            animation-delay: 0s;
+        }
+
+        .glow-orb:nth-child(2) {
+            width: 300px;
+            height: 300px;
+            background: #0099ff;
+            bottom: 10%;
+            right: -5%;
+            animation-delay: 2s;
+        }
+
+        .glow-orb:nth-child(3) {
+            width: 200px;
+            height: 200px;
+            background: #00bfff;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-delay: 4s;
+        }
+
+        @keyframes orbFloat {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-30px) scale(1.1); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 10;
         }
 
         .hero-logo {
-            width: 120px;
-            height: 120px;
-            background: linear-gradient(135deg, var(--primary-blue), #0099ff, #00bfff);
-            border-radius: 30px;
-            margin: 0 auto 30px;
+            width: 140px;
+            height: 140px;
+            background: linear-gradient(135deg, var(--primary-blue), #0099ff, #00bfff, #66d9ff);
+            background-size: 300% 300%;
+            border-radius: 35px;
+            margin: 0 auto 40px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 50px;
-            box-shadow: 0 20px 60px rgba(0, 102, 204, 0.3);
+            font-size: 60px;
+            box-shadow: 0 0 60px rgba(0, 102, 204, 0.6),
+                        0 0 100px rgba(0, 153, 255, 0.4),
+                        inset 0 0 60px rgba(255, 255, 255, 0.1);
+            animation: logoPulse 3s ease-in-out infinite, gradientShift 5s ease infinite;
+            position: relative;
         }
 
-        .hero h1 {
-            font-size: 48px;
-            margin-bottom: 15px;
-            color: var(--text-dark);
+        .hero-logo::before {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            background: linear-gradient(45deg, #0066cc, #0099ff, #00bfff, #66d9ff, #0066cc);
+            background-size: 400% 400%;
+            border-radius: 37px;
+            z-index: -1;
+            animation: gradientBorder 3s ease infinite;
+            filter: blur(5px);
+        }
+
+        @keyframes logoPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes gradientBorder {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .glow-title {
+            font-size: 64px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            position: relative;
+            display: inline-block;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+        }
+
+        .glow-title .text {
+            background: linear-gradient(135deg, #fff 0%, #00bfff 25%, #fff 50%, #0099ff 75%, #fff 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: textShine 4s linear infinite;
+            filter: drop-shadow(0 0 30px rgba(0, 191, 255, 0.8));
+        }
+
+        .glow-title::before {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #00bfff, #0066cc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: blur(20px);
+            opacity: 0.7;
+            animation: glowPulse 2s ease-in-out infinite;
+        }
+
+        .glow-title::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0099ff, #00bfff, #fff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: blur(40px);
+            opacity: 0.5;
+            animation: glowPulse 2s ease-in-out infinite 0.5s;
+        }
+
+        @keyframes textShine {
+            0% { background-position: 0% center; }
+            100% { background-position: 200% center; }
+        }
+
+        @keyframes glowPulse {
+            0%, 100% { opacity: 0.5; filter: blur(20px); }
+            50% { opacity: 0.8; filter: blur(30px); }
         }
 
         .hero h2 {
-            font-size: 20px;
+            font-size: 22px;
             font-weight: 400;
-            color: var(--text-gray);
-            margin-bottom: 40px;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 50px;
+            position: relative;
         }
 
         .hero h2 span {
-            color: var(--primary-blue);
-            font-weight: 600;
+            background: linear-gradient(90deg, #00bfff, #0099ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+            position: relative;
+        }
+
+        .hero h2 span::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00bfff, transparent);
+            animation: underlineGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes underlineGlow {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
         }
 
         .download-btn {
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 15px;
-            background: linear-gradient(135deg, var(--primary-blue), #0099ff);
+            background: linear-gradient(135deg, #0066cc, #0099ff);
             color: white;
-            padding: 18px 50px;
-            border-radius: 50px;
-            font-size: 20px;
-            font-weight: 600;
+            padding: 20px 60px;
+            border-radius: 60px;
+            font-size: 22px;
+            font-weight: 700;
             text-decoration: none;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 30px rgba(0, 102, 204, 0.3);
+            transition: all 0.4s ease;
+            box-shadow: 0 10px 40px rgba(0, 102, 204, 0.4),
+                        0 0 60px rgba(0, 153, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+        }
+
+        .download-btn::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            background: linear-gradient(135deg, #00bfff, #0066cc, #0099ff, #00bfff);
+            background-size: 300% 300%;
+            border-radius: 62px;
+            z-index: -1;
+            animation: btnGradient 3s ease infinite;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .download-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .download-btn:hover::after {
+            left: 100%;
         }
 
         .download-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 40px rgba(0, 102, 204, 0.4);
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 20px 60px rgba(0, 102, 204, 0.6),
+                        0 0 100px rgba(0, 153, 255, 0.4);
+        }
+
+        .download-btn:hover::before {
+            opacity: 1;
+        }
+
+        @keyframes btnGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         .features {
-            padding: 60px 20px 80px;
-            background: #f8f9fa;
+            padding: 80px 20px 100px;
+            background: linear-gradient(180deg, #0a0a1a 0%, #0d1525 50%, #0a0a1a 100%);
+            position: relative;
+        }
+
+        .features::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #0066cc, transparent);
         }
 
         .features h3 {
             text-align: center;
-            font-size: 28px;
-            margin-bottom: 40px;
-            color: var(--text-dark);
+            font-size: 36px;
+            margin-bottom: 50px;
+            background: linear-gradient(135deg, #fff, #00bfff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
         }
 
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 30px;
-            max-width: 1000px;
+            max-width: 1100px;
             margin: 0 auto;
             padding: 0 20px;
         }
 
         .feature-card {
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 35px 30px;
             text-align: center;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.4s ease;
+            border: 1px solid rgba(0, 102, 204, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0, 102, 204, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.4s ease;
         }
 
         .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0, 102, 204, 0.15);
+            transform: translateY(-10px);
+            border-color: rgba(0, 153, 255, 0.5);
+            box-shadow: 0 20px 60px rgba(0, 102, 204, 0.3),
+                        0 0 40px rgba(0, 153, 255, 0.1);
+        }
+
+        .feature-card:hover::before {
+            opacity: 1;
         }
 
         .feature-icon {
-            width: 60px;
-            height: 60px;
-            background: var(--light-blue);
-            border-radius: 15px;
-            margin: 0 auto 20px;
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, rgba(0, 102, 204, 0.2), rgba(0, 153, 255, 0.1));
+            border-radius: 20px;
+            margin: 0 auto 25px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 28px;
+            font-size: 32px;
+            transition: all 0.4s ease;
+            border: 1px solid rgba(0, 153, 255, 0.3);
+        }
+
+        .feature-card:hover .feature-icon {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 0 30px rgba(0, 153, 255, 0.5);
         }
 
         .feature-card h4 {
-            font-size: 18px;
-            margin-bottom: 10px;
-            color: var(--text-dark);
+            font-size: 20px;
+            margin-bottom: 12px;
+            color: #fff;
+            font-weight: 600;
         }
 
         .feature-card p {
-            color: var(--text-gray);
-            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 15px;
+            line-height: 1.6;
         }
 
         .footer {
             text-align: center;
-            padding: 30px;
-            background: var(--primary-blue);
-            color: white;
+            padding: 40px 30px;
+            background: rgba(0, 0, 0, 0.5);
+            color: rgba(255, 255, 255, 0.7);
             font-size: 14px;
+            border-top: 1px solid rgba(0, 102, 204, 0.2);
         }
 
         .footer span {
+            background: linear-gradient(90deg, #00bfff, #0099ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             font-weight: 600;
         }
 
         @media (max-width: 768px) {
             .header {
                 flex-direction: column;
-                gap: 20px;
-                padding: 20px;
+                gap: 15px;
+                padding: 15px 20px;
             }
 
             .logo-text {
@@ -223,53 +586,73 @@
             }
 
             .hero {
-                padding: 50px 20px;
+                padding: 140px 15px 80px;
             }
 
             .hero-logo {
-                width: 100px;
-                height: 100px;
-                font-size: 40px;
+                width: 110px;
+                height: 110px;
+                font-size: 45px;
             }
 
-            .hero h1 {
-                font-size: 32px;
+            .glow-title {
+                font-size: 36px;
+                letter-spacing: 2px;
             }
 
             .hero h2 {
                 font-size: 16px;
-                padding: 0 10px;
             }
 
             .download-btn {
-                padding: 15px 35px;
+                padding: 16px 40px;
                 font-size: 18px;
                 width: 90%;
-                max-width: 300px;
-                justify-content: center;
+                max-width: 320px;
             }
 
             .features {
-                padding: 40px 15px 60px;
+                padding: 60px 15px 80px;
             }
 
             .features h3 {
                 font-size: 24px;
+                margin-bottom: 35px;
             }
 
             .features-grid {
-                grid-template-columns: 1fr;
-                gap: 20px;
+                grid-template-columns: 1fr 1fr;
+                gap: 15px;
             }
 
             .feature-card {
-                padding: 25px;
+                padding: 25px 18px;
             }
+
+            .feature-icon {
+                width: 55px;
+                height: 55px;
+                font-size: 26px;
+                margin-bottom: 18px;
+            }
+
+            .feature-card h4 {
+                font-size: 15px;
+            }
+
+            .feature-card p {
+                font-size: 12px;
+                line-height: 1.5;
+            }
+
+            .glow-orb:nth-child(1) { width: 200px; height: 200px; }
+            .glow-orb:nth-child(2) { width: 150px; height: 150px; }
+            .glow-orb:nth-child(3) { width: 100px; height: 100px; }
         }
 
         @media (max-width: 480px) {
             .header {
-                padding: 15px;
+                padding: 12px 15px;
             }
 
             .logo-icon {
@@ -293,18 +676,18 @@
             }
 
             .hero {
-                padding: 40px 15px;
+                padding: 130px 12px 70px;
             }
 
             .hero-logo {
-                width: 80px;
-                height: 80px;
-                font-size: 35px;
-                border-radius: 20px;
+                width: 90px;
+                height: 90px;
+                font-size: 38px;
+                margin-bottom: 30px;
             }
 
-            .hero h1 {
-                font-size: 26px;
+            .glow-title {
+                font-size: 28px;
             }
 
             .hero h2 {
@@ -312,32 +695,50 @@
             }
 
             .download-btn {
-                padding: 14px 30px;
+                padding: 14px 35px;
                 font-size: 16px;
+            }
+
+            .features {
+                padding: 50px 12px 60px;
             }
 
             .features h3 {
                 font-size: 20px;
-                margin-bottom: 30px;
+                margin-bottom: 25px;
+            }
+
+            .features-grid {
+                gap: 12px;
+            }
+
+            .feature-card {
+                padding: 20px 12px;
             }
 
             .feature-icon {
-                width: 50px;
-                height: 50px;
-                font-size: 24px;
+                width: 48px;
+                height: 48px;
+                font-size: 22px;
+                margin-bottom: 15px;
             }
 
             .feature-card h4 {
-                font-size: 16px;
-            }
-
-            .feature-card p {
                 font-size: 13px;
             }
 
+            .feature-card p {
+                font-size: 11px;
+            }
+
             .footer {
-                padding: 20px;
+                padding: 25px 15px;
                 font-size: 12px;
+            }
+
+            .particle {
+                width: 3px;
+                height: 3px;
             }
         }
     </style>
@@ -349,26 +750,51 @@
             <div class="logo-text">Aurora Podcast</div>
         </div>
         <div class="social-links">
-            <a href="https://instagram.com/aurora_podcast" target="_blank" title="Instagram">
+            <a href="https://www.instagram.com/aurora_university_hyd?igsh=Mm13bjJrMmZxaXQw" target="_blank" title="Instagram">
                 <svg fill="#fff" width="20" height="20" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
             </a>
-            <a href="https://linkedin.com/company/aurora-podcast" target="_blank" title="LinkedIn">
+            <a href="https://www.linkedin.com/in/jeedimetla-charan-089a83339?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" target="_blank" title="LinkedIn">
                 <svg fill="#fff" width="20" height="20" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
             </a>
-            <a href="https://whatsapp.com/channel/0029VbXXXXXX" target="_blank" title="WhatsApp">
+            <a href="https://wa.me/916305321043" target="_blank" title="WhatsApp">
                 <svg fill="#fff" width="20" height="20" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
             </a>
         </div>
     </header>
 
     <section class="hero">
-        <div class="hero-logo">🎓</div>
-        <h1>Aurora Podcast</h1>
-        <h2>Powered by <span>Aurora University</span></h2>
-        <a href="Aurora-Podcast-v4.0.apk" download="Aurora-Podcast-v4.0.apk" class="download-btn">
-            <svg fill="#fff" width="28" height="28" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-            Download Now
-        </a>
+        <div class="particles">
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+        </div>
+        <div class="glow-orb"></div>
+        <div class="glow-orb"></div>
+        <div class="glow-orb"></div>
+        <div class="hero-content">
+            <div class="hero-logo">🎓</div>
+            <h1 class="glow-title" data-text="Aurora Podcast"><span class="text">Aurora Podcast</span></h1>
+            <h2>Powered by <span>Aurora University</span></h2>
+            <a href="Aurora-Podcast-v4.0.apk" download="Aurora-Podcast-v4.0.apk" class="download-btn">
+                <svg fill="#fff" width="28" height="28" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                Download Now
+            </a>
+        </div>
     </section>
 
     <section class="features">

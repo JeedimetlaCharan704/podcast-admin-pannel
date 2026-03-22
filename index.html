@@ -2,1009 +2,950 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Aurora Podcast</title>
+  <title>Aurora Podcast Admin Panel</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="theme-color" content="#1a1a2e">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <meta name="theme-color" content="#1e3a5f">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+  <script src="./firebase-init.js"></script>
   <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
     :root {
-      --primary: #6366f1;
-      --primary-dark: #4f46e5;
-      --primary-light: #818cf8;
-      --secondary: #a855f7;
-      --accent: #06b6d4;
-      --gold: #f59e0b;
-      --bg: #f5f7fa;
+      --primary: #1e3a5f;
+      --primary-dark: #0f172a;
+      --secondary: #6366f1;
+      --accent: #8b5cf6;
+      --success: #10b981;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --bg: #f1f5f9;
       --card: #ffffff;
-      --card-light: #f0f2f5;
-      --text: #1a1a2e;
-      --text-light: #6b7280;
-      --border: #e5e7eb;
+      --text: #1e293b;
+      --text-light: #64748b;
+      --border: #e2e8f0;
     }
-    .dark-mode {
-      --bg: #0f0f23;
-      --card: #1a1a2e;
-      --card-light: #252542;
-      --text: #ffffff;
-      --text-light: #a0a0b0;
-      --border: #2a2a4a;
-    }
-    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    body { 
-      font-family: 'Poppins', sans-serif; 
-      background: var(--bg);
-      color: var(--text); 
-      padding-bottom: 90px; 
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #0f172a 100%);
       min-height: 100vh;
-      transition: all 0.3s ease;
+      color: var(--text);
     }
-    .app { max-width: 480px; margin: 0 auto; padding: 16px; }
-    
-    header { display: flex; justify-content: space-between; align-items: center; padding: 10px 0 20px; }
-    header h1 { font-size: 24px; font-weight: 800; background: linear-gradient(135deg, #6366f1, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .header-icons { display: flex; gap: 8px; }
-    .menu-icon, .theme-icon { font-size: 26px; cursor: pointer; padding: 10px; border-radius: 14px; transition: all 0.3s; }
-    .menu-icon:hover, .theme-icon:hover { transform: scale(1.1); }
-    
-    .welcome-card { 
-      background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #06b6d4 100%); 
-      border-radius: 24px; padding: 28px; color: white; margin-bottom: 24px;
-      box-shadow: 0 20px 50px rgba(99, 102, 241, 0.3);
+
+    .admin-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
     }
-    .welcome-card h2 { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
-    .welcome-card p { font-size: 14px; opacity: 0.9; }
-    
-    .categories { display: flex; gap: 12px; overflow-x: auto; padding: 8px 0 16px; scrollbar-width: none; }
-    .categories::-webkit-scrollbar { display: none; }
-    .cat { 
-      padding: 12px 22px; background: var(--card); border-radius: 24px; 
-      font-size: 13px; font-weight: 600; white-space: nowrap; cursor: pointer; 
-      transition: all 0.3s ease; border: 2px solid transparent;
+
+    .admin-header {
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 30px;
+      margin-bottom: 24px;
+      text-align: center;
     }
-    .cat:hover { transform: translateY(-3px); }
-    .cat.active { 
-      background: linear-gradient(135deg, #6366f1, #a855f7); 
-      border-color: var(--primary-light);
-      box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
+
+    .logo-icon {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, var(--secondary), var(--accent));
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      margin: 0 auto 16px;
     }
-    
-    .search-box { 
-      background: var(--card); border-radius: 18px; padding: 16px; 
-      margin-bottom: 20px; display: flex; align-items: center; gap: 12px;
-      border: 1px solid var(--border);
+
+    .admin-header h1 {
+      color: white;
+      font-size: 28px;
+      font-weight: 700;
     }
-    .search-box input { 
-      flex: 1; border: none; background: transparent; font-size: 15px; 
-      color: var(--text); outline: none; 
+
+    .admin-header p {
+      color: rgba(255,255,255,0.7);
+      font-size: 14px;
+      margin-top: 8px;
     }
-    .search-box input::placeholder { color: var(--text-light); }
-    
-    .section-title { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; margin-top: 28px; }
-    .section-title h3 { font-size: 18px; font-weight: 700; }
-    
-    .episode-item { 
-      display: flex; align-items: center; gap: 14px; background: var(--card); 
-      padding: 16px; border-radius: 20px; margin-bottom: 14px; 
-      transition: all 0.3s ease; border: 1px solid var(--border);
-    }
-    .episode-item:hover { transform: translateY(-4px); box-shadow: 0 15px 40px rgba(0,0,0,0.1); }
-    .episode-icon { 
-      width: 58px; height: 58px; 
-      background: linear-gradient(135deg, #6366f1, #a855f7); 
-      border-radius: 18px; display: flex; align-items: center; justify-content: center; 
-      font-size: 26px; flex-shrink: 0;
-    }
-    .episode-content { flex: 1; min-width: 0; }
-    .episode-content h4 { font-size: 15px; font-weight: 600; margin-bottom: 4px; display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
-    .episode-content p { font-size: 12px; color: var(--text-light); }
-    .podcast-emoji { font-size: 22px; margin-right: 8px; }
-    .podcast-title { 
-      font-size: 15px; 
-      font-weight: 800; 
-      flex: 1;
-      background: linear-gradient(135deg, #6366f1, #a855f7, #06b6d4);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      text-shadow: 0 2px 10px rgba(99, 102, 241, 0.2);
-      letter-spacing: 0.3px;
-    }
-    .podcast-source {
+
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 12px;
+      font-size: 14px;
       font-weight: 600;
-      color: #6366f1;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
     }
-    .podcast-dot {
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--secondary), var(--accent));
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      color: white;
+    }
+
+    .btn-warning {
+      background: var(--warning);
+      color: white;
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: white;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 20px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 13px;
       color: var(--text-light);
-      margin: 0 6px;
-    }
-    .podcast-date {
+      margin-bottom: 6px;
       font-weight: 500;
-      color: #a855f7;
     }
-    .play-btn { 
-      width: 50px; height: 50px; border-radius: 50%; border: none; 
-      background: linear-gradient(135deg, #6366f1, #a855f7); 
-      color: white; font-size: 18px; cursor: pointer; 
-      transition: all 0.3s ease;
+
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      padding: 14px 16px;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      font-size: 14px;
+      font-family: inherit;
+      transition: border-color 0.3s;
     }
-    .play-btn:hover { transform: scale(1.15); }
-    .play-btn.playing { animation: pulse 1s infinite; }
-    .episode-actions { display: flex; gap: 4px; align-items: center; }
-    .action-btn { width: 36px; height: 36px; border-radius: 10px; border: none; background: var(--card-light, #f0f0f0); font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-    .action-btn:active { transform: scale(0.95); }
-    .fav-btn, .download-btn { 
-      width: 34px; height: 34px; border-radius: 10px; border: none; 
-      background: var(--card-light, #f0f0f0); font-size: 14px; cursor: pointer; 
-      display: flex; align-items: center; justify-content: center; transition: all 0.2s;
+
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      outline: none;
+      border-color: var(--secondary);
     }
-    .fav-btn:active, .download-btn:active { transform: scale(0.9); }
-    .fav-btn.favorited { background: rgba(239, 68, 68, 0.15); }
-    .download-btn.downloaded { background: rgba(16, 185, 129, 0.15); }
-    .loading { text-align: center; padding: 40px; color: var(--text-light); }
-    .empty-state { text-align: center; padding: 40px; color: var(--text-light); }
-    .empty-state span { font-size: 50px; display: block; margin-bottom: 15px; }
-    
-    .bottom-nav { 
-      position: fixed; bottom: 0; left: 0; right: 0; max-width: 480px; margin: auto; 
-      background: var(--card); backdrop-filter: blur(20px);
-      display: flex; justify-content: space-around; padding: 10px 8px 18px; 
-      box-shadow: 0 -10px 40px rgba(0,0,0,0.1); z-index: 100; 
-      border-radius: 24px 24px 0 0; border-top: 1px solid var(--border);
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
     }
-    .nav-item { 
-      display: flex; flex-direction: column; align-items: center; gap: 4px; 
-      padding: 8px 16px; border-radius: 16px; text-decoration: none; 
-      color: var(--text-light); font-size: 10px; font-weight: 600; 
-      transition: all 0.3s ease;
+
+    @media (max-width: 600px) {
+      .form-row { grid-template-columns: 1fr; }
     }
-    .nav-item:hover { transform: translateY(-3px); }
-    .nav-item.active { 
-      color: var(--primary); 
-      background: rgba(99,102,241,0.15);
+
+    .data-list {
+      max-height: 400px;
+      overflow-y: auto;
     }
-    .nav-icon { font-size: 24px; }
-    
-    .now-playing { 
-      position: fixed; bottom: 85px; left: 0; right: 0; max-width: 480px; margin: auto; 
-      background: linear-gradient(135deg, #1a1a2e, #0f0f23); 
-      border-radius: 20px; padding: 16px; display: none; align-items: center; gap: 14px; 
-      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.5); z-index: 99;
-      border: 1px solid rgba(255,255,255,0.1);
+
+    .data-item {
+      background: var(--bg);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
     }
-    .now-playing.show { display: flex; }
-    .np-cover { 
-      width: 52px; height: 52px; border-radius: 14px; 
-      background: linear-gradient(135deg, #6366f1, #a855f7); 
-      display: flex; align-items: center; justify-content: center; font-size: 24px; 
-      flex-shrink: 0;
+
+    .data-item-content {
+      flex: 1;
     }
-    .np-cover.playing { animation: rotateSpin 10s linear infinite; }
-    @keyframes rotateSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-    .np-info { flex: 1; min-width: 0; }
-    .np-title { font-size: 14px; font-weight: 600; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .np-progress { 
-      height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; margin-top: 6px; overflow: hidden; 
+
+    .data-item h4 {
+      font-size: 15px;
+      color: var(--primary);
+      margin-bottom: 4px;
     }
-    .np-progress-bar { height: 100%; background: linear-gradient(90deg, #6366f1, #a855f7); border-radius: 2px; width: 0%; transition: width 0.1s; }
-    .np-time { font-size: 10px; color: rgba(255,255,255,0.6); margin-top: 4px; display: flex; justify-content: space-between; }
-    .np-controls { display: flex; gap: 8px; align-items: center; }
-    .np-btn { 
-      width: 40px; height: 40px; border-radius: 50%; border: none; 
-      background: linear-gradient(135deg, #6366f1, #a855f7); color: white; 
-      font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center;
-      transition: transform 0.2s;
+
+    .data-item p {
+      font-size: 12px;
+      color: var(--text-light);
+      margin-bottom: 6px;
     }
-    .np-btn:active { transform: scale(0.9); }
-    .np-btn.small { width: 32px; height: 32px; font-size: 12px; background: rgba(255,255,255,0.15); }
-    .np-fav-btn { color: white; font-size: 18px; cursor: pointer; transition: transform 0.2s; }
-    .np-fav-btn:active { transform: scale(1.2); }
-    .np-fav-btn.favorited { animation: heartBeat 0.3s; }
-    @keyframes heartBeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.3); } }
-    
-    .fav-btn { background: none; border: none; font-size: 18px; cursor: pointer; transition: transform 0.2s; }
-    .fav-btn:active { transform: scale(1.2); }
-    .fav-btn.favorited { animation: heartPop 0.3s; }
-    @keyframes heartPop { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.3); } }
-    
-    .download-btn { background: none; border: none; font-size: 16px; cursor: pointer; }
-    .download-btn.downloaded { color: #10b981; }
-    
+
+    .data-item .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .badge {
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .badge-event { background: #dbeafe; color: #1e40af; }
+    .badge-academic { background: #d1fae5; color: #065f46; }
+    .badge-career { background: #fef3c7; color: #92400e; }
+    .badge-alert { background: #fee2e2; color: #991b1b; }
+    .badge-info { background: #e0e7ff; color: #3730a3; }
+    .badge-warning { background: #fef3c7; color: #92400e; }
+    .badge-success { background: #d1fae5; color: #065f46; }
+    .badge-podcast { background: #fce7f3; color: #9d174d; }
+
+    .delete-btn {
+      background: var(--danger);
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px;
+      color: var(--text-light);
+    }
+
     .toast {
-      position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%);
-      background: linear-gradient(135deg, #10b981, #059669); color: white;
-      padding: 14px 24px; border-radius: 30px; font-size: 14px; font-weight: 500;
-      z-index: 10000; opacity: 0; transition: opacity 0.3s; pointer-events: none;
-      box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4);
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 16px 24px;
+      border-radius: 12px;
+      color: white;
+      font-weight: 500;
+      z-index: 10000;
+      animation: slideIn 0.3s ease;
     }
-    .toast.show { opacity: 1; }
-    
-    #drawer { 
-      position: fixed; top: 0; left: -300px; width: 300px; height: 100%; 
-      background: var(--card); box-shadow: 10px 0 40px rgba(0,0,0,0.2); padding: 30px; 
-      transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1); z-index: 1001;
+
+    .toast.success { background: var(--success); }
+    .toast.error { background: var(--danger); }
+    .toast.info { background: var(--secondary); }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(100px); }
+      to { opacity: 1; transform: translateX(0); }
     }
-    #drawer.open { left: 0; }
-    #overlay { 
-      position: fixed; top: 0; left: 0; right: 0; bottom: 0; 
-      background: rgba(0,0,0,0.5); opacity: 0; visibility: hidden; 
-      z-index: 1000; transition: all 0.3s;
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      overflow-y: auto;
+      padding: 20px;
     }
-    #overlay.show { opacity: 1; visibility: visible; }
-    
-    @keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4); } 50% { box-shadow: 0 0 0 15px rgba(99, 102, 241, 0); } }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 20px;
+      padding: 30px;
+      max-width: 500px;
+      width: 100%;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .modal-header h2 {
+      color: var(--primary);
+    }
+
+    .close-btn {
+      background: var(--bg);
+      border: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 18px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    @media (max-width: 700px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .stat-card {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+
+    .stat-icon {
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+
+    .stat-number {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: var(--text-light);
+      margin-top: 4px;
+    }
+
+    .logout-btn {
+      background: rgba(255,255,255,0.1);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-top: 16px;
+    }
+
+    .login-screen {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .login-box {
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .login-box h1 {
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+
+    .login-box p {
+      color: var(--text-light);
+      margin-bottom: 24px;
+    }
   </style>
 </head>
-<body class="dark-mode">
+<body>
 
-
-
-<!-- Main App -->
-<div class="app">
-  <header>
-    <span class="menu-icon" onclick="toggleMenu()">☰</span>
-    <h1>Aurora</h1>
-    <div class="header-icons">
-      <span class="theme-icon" onclick="toggleTheme()" id="themeBtn">☀️</span>
+<div id="loginScreen" class="login-screen" style="display: none;">
+  <div class="login-box">
+    <div class="logo-icon">🎙️</div>
+    <h1>Aurora Admin</h1>
+    <p>Sign in to manage your podcast</p>
+    <div class="form-group">
+      <input type="email" id="loginEmail" placeholder="Admin email">
     </div>
-  </header>
-
-  <div class="welcome-card">
-    <h2 id="welcomeTitle">Welcome Back! 👋</h2>
-    <p id="welcomeSubtitle">Listen to college updates & podcasts</p>
-  </div>
-
-  <div class="categories">
-    <div class="cat active" id="catAll" onclick="filterCat(this, 'all')">✨ All</div>
-    <div class="cat" id="catNew" onclick="filterCat(this, 'new')">📢 New</div>
-    <div class="cat" id="catAcademic" onclick="filterCat(this, 'academic')">📚 Academic</div>
-    <div class="cat" id="catEvents" onclick="filterCat(this, 'events')">🎉 Events</div>
-    <div class="cat" id="catCareer" onclick="filterCat(this, 'career')">💼 Career</div>
-  </div>
-
-  <div class="search-box">
-    <span>🔍</span>
-    <input type="text" id="searchInput" id="searchPlaceholder" placeholder="Search podcasts...">
-  </div>
-
-  <div class="section-title">
-    <h3 id="sectionTitle">📻 Latest Podcasts</h3>
-  </div>
-
-  <div id="podcastsList">
-    <!-- Episodes loaded via JavaScript -->
+    <div class="form-group">
+      <input type="password" id="loginPassword" placeholder="Password">
+    </div>
+    <button class="btn btn-primary" style="width: 100%;" onclick="adminLogin()">Login</button>
+    <p id="loginError" style="color: var(--danger); margin-top: 12px; font-size: 13px;"></p>
   </div>
 </div>
 
-<!-- Now Playing Bar -->
-<div class="now-playing" id="nowPlaying">
-  <div class="np-cover" id="npCover">🎵</div>
-  <div class="np-info">
-    <div class="np-title" id="npTitle">Not Playing</div>
-    <div class="np-progress">
-      <div class="np-progress-bar" id="npProgressBar"></div>
+<div id="adminPanel" class="admin-container" style="display: none;">
+  <div class="admin-header">
+    <div class="logo-icon">🎙️</div>
+    <h1>Aurora Podcast Admin</h1>
+    <p>Manage Events, Alerts & Podcasts</p>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon">📅</div>
+      <div class="stat-number" id="totalEvents">0</div>
+      <div class="stat-label">Total Events</div>
     </div>
-    <div class="np-time">
-      <span id="npCurrentTime">0:00</span>
-      <span id="npDuration">0:00</span>
+    <div class="stat-card">
+      <div class="stat-icon">🔔</div>
+      <div class="stat-number" id="totalAlerts">0</div>
+      <div class="stat-label">Alerts Sent</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">🎙️</div>
+      <div class="stat-number" id="totalPodcasts">0</div>
+      <div class="stat-label">Podcasts</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">👥</div>
+      <div class="stat-number" id="totalUsers">0</div>
+      <div class="stat-label">Users</div>
     </div>
   </div>
-  <div class="np-controls">
-    <span class="np-fav-btn" id="npFavBtn" onclick="toggleCurrentFavorite()">🤍</span>
-    <button class="np-btn" id="npPlayBtn" onclick="togglePlayPause()">▶</button>
-    <button class="np-btn small" onclick="stopAudio()">⏹</button>
+
+  <div class="card">
+    <div class="card-header">
+      <h2 class="card-title">📅 Events</h2>
+      <button class="btn btn-primary" onclick="openModal('eventModal')">+ Add Event</button>
+    </div>
+    <div class="data-list" id="eventsList">
+      <div class="empty-state">Loading events...</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <h2 class="card-title">🔔 Alerts / Notifications</h2>
+      <button class="btn btn-primary" onclick="openModal('alertModal')">+ Send Alert</button>
+    </div>
+    <div class="data-list" id="alertsList">
+      <div class="empty-state">Loading alerts...</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <h2 class="card-title">🎙️ Podcasts</h2>
+      <button class="btn btn-primary" onclick="openModal('podcastModal')">+ Add Podcast</button>
+    </div>
+    <div class="data-list" id="podcastsList">
+      <div class="empty-state">Loading podcasts...</div>
+    </div>
   </div>
 </div>
 
-<!-- Toast Notification -->
-<div class="toast" id="toast"></div>
-
-<!-- Bottom Navigation -->
-<nav class="bottom-nav">
-  <a href="index.html" class="nav-item active">🏠<br><span>Home</span></a>
-  <a href="notifications.html" class="nav-item">🔔<br><span>Alerts</span></a>
-  <a href="events.html" class="nav-item">📅<br><span>Events</span></a>
-  <a href="profile.html" class="nav-item">👤<br><span>Profile</span></a>
-</nav>
-
-<style>
-.credit-footer {
-  text-align: center;
-  padding: 30px 16px 120px;
-  position: relative;
-}
-.credit-glow {
-  font-family: 'Poppins', sans-serif;
-  font-size: 14px;
-  font-weight: 600;
-  background: linear-gradient(90deg, #6366f1, #a855f7, #06b6d4, #a855f7, #6366f1);
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  animation: creditShine 3s linear infinite;
-  text-shadow: none;
-  filter: drop-shadow(0 0 10px rgba(168, 85, 247, 0.5));
-  position: relative;
-}
-.credit-glow::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: -20px;
-  width: 15px;
-  height: 15px;
-  background: radial-gradient(circle, rgba(168, 85, 247, 0.8), transparent);
-  border-radius: 50%;
-  animation: sideLight 2s ease-in-out infinite;
-  transform: translateY(-50%);
-}
-.credit-glow::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  right: -20px;
-  width: 15px;
-  height: 15px;
-  background: radial-gradient(circle, rgba(6, 182, 212, 0.8), transparent);
-  border-radius: 50%;
-  animation: sideLight 2s ease-in-out infinite reverse;
-  transform: translateY(-50%);
-}
-.credit-sub {
-  font-size: 11px;
-  color: var(--text-light);
-  margin-top: 8px;
-  opacity: 0.7;
-}
-@keyframes creditShine {
-  0% { background-position: 0% center; }
-  100% { background-position: 200% center; }
-}
-@keyframes sideLight {
-  0%, 100% { opacity: 0.3; transform: translateY(-50%) translateX(0); }
-  50% { opacity: 1; transform: translateY(-50%) translateX(5px); }
-}
-</style>
-
-<div class="credit-footer" id="creditFooter">
-  <div class="credit-glow" id="creditText">The Podcast App Was "Build By Charan"</div>
-  <div class="credit-sub">✨ Aurora Podcast ✨</div>
-</div>
-
-<!-- Drawer Menu -->
-<div id="drawer">
-  <div style="display:flex;align-items:center;gap:14px;margin-bottom:30px;padding-bottom:20px;border-bottom:1px solid var(--border);">
-    <div style="width:56px;height:56px;background:linear-gradient(135deg,#6366f1,#a855f7);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:28px;">🎙️</div>
-    <h3 style="font-size:20px;font-weight:700;">Aurora</h3>
+<div id="eventModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>📅 Add New Event</h2>
+      <button class="close-btn" onclick="closeModal('eventModal')">×</button>
+    </div>
+    <div class="form-group">
+      <label>Event Title *</label>
+      <input type="text" id="eventTitle" placeholder="e.g., SANGAMA 2026">
+    </div>
+    <div class="form-group">
+      <label>Description</label>
+      <textarea id="eventDesc" placeholder="Event details..." rows="2"></textarea>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Date *</label>
+        <input type="date" id="eventDate">
+      </div>
+      <div class="form-group">
+        <label>Time</label>
+        <input type="text" id="eventTime" placeholder="e.g., 9:00 AM">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Location</label>
+      <input type="text" id="eventLocation" placeholder="e.g., University Campus">
+    </div>
+    <div class="form-group">
+      <label>Category</label>
+      <select id="eventCategory">
+        <option value="event">🎉 Events</option>
+        <option value="academic">📚 Academic</option>
+        <option value="career">💼 Career</option>
+        <option value="technical">💻 Technical</option>
+        <option value="cultural">🎭 Cultural</option>
+      </select>
+    </div>
+    <button class="btn btn-primary" style="width: 100%;" onclick="saveEvent()">Save Event</button>
   </div>
-  <a href="index.html" style="display:block;padding:14px 0;color:var(--text);text-decoration:none;font-weight:500;font-size:15px;border-radius:12px;">🏠 Home</a>
-  <a href="events.html" style="display:block;padding:14px 0;color:var(--text);text-decoration:none;font-weight:500;font-size:15px;border-radius:12px;">📅 Events</a>
-  <a href="notifications.html" style="display:block;padding:14px 0;color:var(--text);text-decoration:none;font-weight:500;font-size:15px;border-radius:12px;">🔔 Alerts</a>
-  <a href="profile.html" style="display:block;padding:14px 0;color:var(--text);text-decoration:none;font-weight:500;font-size:15px;border-radius:12px;">👤 My Profile</a>
-  <a href="contact.html" style="display:block;padding:14px 0;color:var(--text);text-decoration:none;font-weight:500;font-size:15px;border-radius:12px;">📞 Contact</a>
-  <a href="login.html" style="display:block;padding:14px 0;color:#ef4444;text-decoration:none;font-weight:500;font-size:15px;border-radius:12px;margin-top:20px;">🚪 Logout</a>
 </div>
-<div id="overlay" onclick="toggleMenu()"></div>
 
-<audio id="player"></audio>
+<div id="alertModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>🔔 Send Alert</h2>
+      <button class="close-btn" onclick="closeModal('alertModal')">×</button>
+    </div>
+    <div class="form-group">
+      <label>Alert Title *</label>
+      <input type="text" id="alertTitle" placeholder="e.g., Fee Payment Reminder">
+    </div>
+    <div class="form-group">
+      <label>Message</label>
+      <textarea id="alertMessage" placeholder="Alert details..." rows="3"></textarea>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Type</label>
+        <select id="alertType">
+          <option value="alert">🔴 Alert</option>
+          <option value="info">ℹ️ Info</option>
+          <option value="warning">⚠️ Warning</option>
+          <option value="success">✅ Success</option>
+          <option value="podcast">🎙️ Podcast</option>
+          <option value="event">📅 Event</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Source</label>
+        <input type="text" id="alertSource" placeholder="e.g., Admin">
+      </div>
+    </div>
+    <button class="btn btn-primary" style="width: 100%;" onclick="sendAlert()">Send Alert</button>
+  </div>
+</div>
+
+<div id="podcastModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>🎙️ Add Podcast</h2>
+      <button class="close-btn" onclick="closeModal('podcastModal')">×</button>
+    </div>
+    <div class="form-group">
+      <label>Title *</label>
+      <input type="text" id="podcastTitle" placeholder="e.g., Mid-Term Results">
+    </div>
+    <div class="form-group">
+      <label>Description</label>
+      <textarea id="podcastDesc" placeholder="Podcast details..." rows="2"></textarea>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Source *</label>
+        <input type="text" id="podcastSource" placeholder="e.g., Admin Office">
+      </div>
+      <div class="form-group">
+        <label>Duration</label>
+        <input type="text" id="podcastDuration" placeholder="e.g., 5 min">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Audio URL</label>
+      <input type="text" id="podcastUrl" placeholder="Audio file URL">
+    </div>
+    <div class="form-group">
+      <label>Category</label>
+      <select id="podcastCategory">
+        <option value="announcement">📢 Announcement</option>
+        <option value="academic">📚 Academic</option>
+        <option value="events">🎉 Events</option>
+        <option value="career">💼 Career</option>
+      </select>
+    </div>
+    <button class="btn btn-primary" style="width: 100%;" onclick="savePodcast()">Save Podcast</button>
+  </div>
+</div>
 
 <script>
-// Toast notification
-function showToast(message) {
-  var toast = document.getElementById('toast');
-  toast.textContent = message;
-  toast.classList.add('show');
-  setTimeout(function() { toast.classList.remove('show'); }, 2500);
-}
+  const ADMIN_EMAIL = "charan.jeedimetla@aurora.edu.in";
+  const ADMIN_PASSWORD = "Charan@123";
 
-// Format time
-function formatTime(seconds) {
-  if (!seconds || isNaN(seconds)) return '0:00';
-  var mins = Math.floor(seconds / 60);
-  var secs = Math.floor(seconds % 60);
-  return mins + ':' + (secs < 10 ? '0' : '') + secs;
-}
-
-// Theme Management
-function toggleTheme() {
-  var body = document.body;
-  var btn = document.getElementById('themeBtn');
-  if (body.classList.contains('dark-mode')) {
-    body.classList.remove('dark-mode');
-    body.classList.add('light-mode');
-    btn.textContent = '🌙';
-    localStorage.setItem('aurora_theme', 'light');
-  } else {
-    body.classList.remove('light-mode');
-    body.classList.add('dark-mode');
-    btn.textContent = '☀️';
-    localStorage.setItem('aurora_theme', 'dark');
-  }
-}
-
-// Initialize theme
-(function() {
-  var theme = localStorage.getItem('aurora_theme') || 'dark';
-  var body = document.body;
-  var btn = document.getElementById('themeBtn');
-  if (theme === 'light') {
-    body.classList.remove('dark-mode');
-    body.classList.add('light-mode');
-    btn.textContent = '🌙';
-  } else {
-    body.classList.add('dark-mode');
-    btn.textContent = '☀️';
-  }
-})();
-
-// App Init
-(function() {
-  // Request notification permission
-  if (typeof requestNotificationPermission === 'function') {
-    requestNotificationPermission();
-  }
-  
-  // Load all texts from Firebase
-  loadAppTexts();
-  loadCreditText();
-  
-  // Check for event reminders and notifications (non-blocking)
-  setTimeout(function() {
-    checkEventReminders();
-    checkFirebaseNotifications();
-  }, 1000);
-})();
-
-// Load credit text from Firebase
-async function loadCreditText() {
-  var creditText = document.getElementById('creditText');
-  if (!creditText) return;
-  
-  // Default text
-  var defaultText = 'The Podcast App Was "Build By Charan"';
-  
-  try {
-    if (typeof db !== 'undefined' && db) {
-      var snapshot = await db.ref('appSettings/creditText').once('value');
-      var text = snapshot.val();
-      if (text && text.message) {
-        creditText.textContent = text.message;
-      } else {
-        creditText.textContent = defaultText;
-      }
+  function init() {
+    const adminLogin = localStorage.getItem('aurora_admin');
+    if (adminLogin === 'true') {
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('adminPanel').style.display = 'block';
+      loadAllData();
     } else {
-      creditText.textContent = defaultText;
-    }
-  } catch(e) {
-    console.log('Error loading credit text:', e);
-    creditText.textContent = defaultText;
-  }
-}
-
-// Load all app texts from Firebase
-async function loadAppTexts() {
-  var defaultTexts = {
-    appName: 'Aurora',
-    splashLogo: '🎙️',
-    splashTitle: 'Aurora',
-    welcomeTitle: 'Welcome Back! 👋',
-    welcomeSubtitle: 'Listen to college updates & podcasts',
-    searchPlaceholder: 'Search podcasts...',
-    sectionTitle: '📻 Latest Podcasts',
-    catAll: '✨ All',
-    catNew: '📢 New',
-    catAcademic: '📚 Academic',
-    catEvents: '🎉 Events',
-    catCareer: '💼 Career',
-    creditText: 'The Podcast App Was "Build By Charan"',
-    creditSub: '✨ Aurora Podcast ✨'
-  };
-  
-  try {
-    if (typeof db !== 'undefined' && db) {
-      var snapshot = await db.ref('appSettings/texts').once('value');
-      var texts = snapshot.val();
-      
-      if (texts) {
-        Object.keys(texts).forEach(function(key) {
-          var el = document.getElementById(key);
-          if (el) {
-            el.textContent = texts[key];
-          }
-        });
-        
-        // Cache locally
-        localStorage.setItem('aurora_app_texts', JSON.stringify(texts));
-        localStorage.setItem('aurora_texts_timestamp', Date.now().toString());
-      } else {
-        // Use cached texts if available
-        var cached = localStorage.getItem('aurora_app_texts');
-        if (cached) {
-          var cachedTexts = JSON.parse(cached);
-          Object.keys(cachedTexts).forEach(function(key) {
-            var el = document.getElementById(key);
-            if (el) {
-              el.textContent = cachedTexts[key];
-            }
-          });
-        }
-      }
-    }
-  } catch(e) {
-    console.log('Error loading app texts:', e);
-    // Fallback to cached
-    var cached = localStorage.getItem('aurora_app_texts');
-    if (cached) {
-      var cachedTexts = JSON.parse(cached);
-      Object.keys(cachedTexts).forEach(function(key) {
-        var el = document.getElementById(key);
-        if (el) {
-          el.textContent = cachedTexts[key];
-        }
-      });
+      document.getElementById('loginScreen').style.display = 'flex';
+      document.getElementById('adminPanel').style.display = 'none';
     }
   }
-}
 
-// Check for upcoming events and show notification
-async function checkEventReminders() {
-  if (typeof FirebaseService === 'undefined') return;
-  
-  try {
-    var events = await FirebaseService.getEvents();
-    var now = new Date();
-    now.setHours(0, 0, 0, 0);
+  function adminLogin() {
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value;
     
-    var tomorrow = new Date(now);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    
-    var dayAfter = new Date(tomorrow);
-    dayAfter.setDate(dayAfter.getDate() + 1);
-    
-    // Check for events tomorrow (1 day before reminder)
-    var tomorrowKey = 'aurora_reminder_tomorrow';
-    if (!localStorage.getItem(tomorrowKey)) {
-      var tomorrowEvents = events.filter(function(ev) {
-        var eventDate = new Date(ev.date);
-        eventDate.setHours(0, 0, 0, 0);
-        return eventDate.getTime() === tomorrow.getTime();
-      });
-      
-      if (tomorrowEvents.length > 0) {
-        var eventNames = tomorrowEvents.map(function(e) { return e.title; }).join(', ');
-        showToast('📅 Event tomorrow: ' + eventNames);
-        localStorage.setItem(tomorrowKey, 'true');
-        
-        // Show browser notification if permitted
-        if (typeof showLocalNotification === 'function') {
-          showLocalNotification('Aurora Podcast', 'Event tomorrow: ' + eventNames);
-        }
-      }
-    }
-    
-    // Check for events today
-    var todayKey = 'aurora_reminder_today_' + now.toISOString().split('T')[0];
-    if (!localStorage.getItem(todayKey)) {
-      var todayEvents = events.filter(function(ev) {
-        var eventDate = new Date(ev.date);
-        eventDate.setHours(0, 0, 0, 0);
-        return eventDate.getTime() === now.getTime();
-      });
-      
-      if (todayEvents.length > 0) {
-        var eventNames = todayEvents.map(function(e) { return e.title; }).join(', ');
-        showToast('📅 Today: ' + eventNames);
-        localStorage.setItem(todayKey, 'true');
-      }
-    }
-  } catch(e) {
-    console.log('Error checking reminders:', e);
-  }
-}
-
-// Check for Firebase notifications
-async function checkFirebaseNotifications() {
-  if (typeof FirebaseService === 'undefined' || typeof db === 'undefined') return;
-  
-  try {
-    var deviceId = localStorage.getItem('aurora_device_id') || 'unknown';
-    var notifSnapshot = await db.ref('notifications').orderByChild('target').equalTo(deviceId).once('value');
-    var notifs = notifSnapshot.val();
-    
-    if (notifs) {
-      var latestNotifKey = localStorage.getItem('aurora_latest_notif');
-      Object.keys(notifs).forEach(function(key) {
-        if (key !== latestNotifKey) {
-          var notif = notifs[key];
-          showToast(notif.title || 'New notification');
-          
-          if (typeof showLocalNotification === 'function') {
-            showLocalNotification(notif.title || 'Aurora Podcast', notif.body || 'You have a new notification');
-          }
-        }
-      });
-      
-      var keys = Object.keys(notifs);
-      if (keys.length > 0) {
-        localStorage.setItem('aurora_latest_notif', keys[keys.length - 1]);
-      }
-    }
-  } catch(e) {
-    console.log('Error checking notifications:', e);
-  }
-}
-
-// Toggle Menu
-function toggleMenu() {
-  document.getElementById('drawer').classList.toggle('open');
-  document.getElementById('overlay').classList.toggle('show');
-}
-
-// Load Episodes
-function loadEpisodesFromFirebase() {
-  var container = document.getElementById('podcastsList');
-  if (!container) return;
-  
-  var episodes = [
-    { id: 'autoexpo', title: 'AUTO EXPO 🏍️', source: 'Events Committee', date: '25 MAR', file: 'AUDIOS/AUTO EXPO MAR25.mpeg', category: 'events' },
-    { id: 'anvithi', title: 'ANVITHI 2026 💥', source: 'Admin Office', date: '24 MAR', file: 'AUDIOS/ANVITHI2026.mpeg', category: 'announcement' },
-    { id: 'sangama_success', title: 'SANGAMA SUCCESS', source: 'Exam Cell', date: '23 MAR', file: 'AUDIOS/SANGAMASUCCESS.mpeg', category: 'academic' },
-    { id: 'sangama2026', title: 'SANGAMA 2026', source: 'Events Committee', date: '22 MAR', file: 'AUDIOS/SANGAMA.mpeg', category: 'events' },
-    { id: 'rules', title: 'Rules and Regulations', source: 'Admin Office', date: '21 MAR', file: 'AUDIOS/rules.mp3', category: 'announcement' }
-  ];
-  
-  var html = '';
-  episodes.forEach(function(ep) {
-    var epId = ep.id || ep.title;
-    var epFile = ep.file || '';
-    var epTitle = ep.title || 'Untitled';
-    var epSource = ep.source || 'Aurora';
-    var epDate = ep.date || 'Recently';
-    
-    var icon = '🎙️';
-    var emoji = '🎙️';
-    if (epTitle.includes('AUTO EXPO')) { icon = '🏍️'; emoji = '🏍️'; }
-    else if (epTitle.includes('ANVITHI')) { icon = '💥'; emoji = '💥'; }
-    else if (epTitle.includes('SANGAMA SUCCESS')) { icon = '🎉'; emoji = '🎉'; }
-    else if (epTitle.includes('SANGAMA 2026')) { icon = '🏆'; emoji = '🏆'; }
-    else if (epTitle.includes('Rules')) { icon = '📜'; emoji = '📜'; }
-    else if (ep.category === 'announcement') { icon = '📢'; emoji = '📢'; }
-    else if (ep.category === 'academic') { icon = '📚'; emoji = '📚'; }
-    else if (ep.category === 'placement') { icon = '💼'; emoji = '💼'; }
-    else if (ep.category === 'events') { icon = '🎊'; emoji = '🎊'; }
-    
-    var displayTitle = '<span class="podcast-title">' + epTitle + '</span>';
-    var displayMeta = '<span class="podcast-source">' + epSource + '</span> <span class="podcast-dot">•</span> <span class="podcast-date">' + epDate + '</span>';
-    
-    html += '<div class="episode-item">' +
-      '<div class="episode-icon">' + icon + '</div>' +
-      '<div class="episode-content">' +
-        '<h4>' + displayTitle + '</h4>' +
-        '<p>' + displayMeta + '</p>' +
-      '</div>' +
-      '<span class="episode-right-emoji">' + emoji + '</span>' +
-      '<div class="episode-actions">' +
-        '<button class="fav-btn" data-id="' + epId + '" onclick="toggleFavorite(\'' + epId + '\',\'' + epFile + '\',\'' + epTitle + '\')" title="Favorite">🤍</button>' +
-        '<button class="download-btn" data-id="' + epId + '" onclick="toggleDownload(\'' + epId + '\',\'' + epFile + '\',\'' + epTitle + '\')" title="Download">⬇️</button>' +
-        '<button class="play-btn" onclick="playAudio(\'' + epFile + '\', this, \'' + epTitle + '\', \'' + epId + '\')">▶</button>' +
-      '</div>' +
-    '</div>';
-  });
-  
-  container.innerHTML = html;
-  updateFavoriteButtons();
-  updateDownloadButtons();
-}
-
-// Load episodes on page load
-document.addEventListener('DOMContentLoaded', function() {
-  // Load episodes
-  loadEpisodesFromFirebase();
-  updateFavoriteButtons();
-  updateDownloadButtons();
-});
-
-// Audio Player
-var player = document.getElementById('player');
-var nowPlaying = document.getElementById('nowPlaying');
-var npTitle = document.getElementById('npTitle');
-var npCover = document.getElementById('npCover');
-var npProgressBar = document.getElementById('npProgressBar');
-var npCurrentTime = document.getElementById('npCurrentTime');
-var npDuration = document.getElementById('npDuration');
-var npPlayBtn = document.getElementById('npPlayBtn');
-var npFavBtn = document.getElementById('npFavBtn');
-var currentBtn = null;
-var currentAudioFile = '';
-var currentAudioTitle = '';
-var currentAudioId = '';
-
-// Update progress
-player.ontimeupdate = function() {
-  if (player.duration) {
-    var percent = (player.currentTime / player.duration) * 100;
-    npProgressBar.style.width = percent + '%';
-    npCurrentTime.textContent = formatTime(player.currentTime);
-    npDuration.textContent = formatTime(player.duration);
-  }
-};
-
-// Toggle Play/Pause
-function togglePlayPause() {
-  if (player.paused) {
-    player.play();
-    npPlayBtn.textContent = '⏸';
-    npCover.classList.add('playing');
-  } else {
-    player.pause();
-    npPlayBtn.textContent = '▶';
-    npCover.classList.remove('playing');
-  }
-}
-
-// Toggle current favorite from mini player
-function toggleCurrentFavorite() {
-  if (!currentAudioId) return;
-  var favorites = JSON.parse(localStorage.getItem('aurora_favorites') || '[]');
-  var exists = favorites.find(f => f.id === currentAudioId);
-  if (exists) {
-    favorites = favorites.filter(f => f.id !== currentAudioId);
-    npFavBtn.textContent = '🤍';
-    npFavBtn.classList.remove('favorited');
-    showToast('Removed from favorites');
-  } else {
-    favorites.push({ id: currentAudioId, file: currentAudioFile, title: currentAudioTitle, addedAt: Date.now() });
-    npFavBtn.textContent = '❤️';
-    npFavBtn.classList.add('favorited');
-    showToast('Added to favorites ❤️');
-  }
-  localStorage.setItem('aurora_favorites', JSON.stringify(favorites));
-  updateFavoriteButtons();
-}
-
-// Add to history
-function addToHistory(id, file, title) {
-  var history = JSON.parse(localStorage.getItem('aurora_history') || '[]');
-  history = history.filter(h => h.id !== id);
-  history.unshift({ id: id, file: file, title: title, playedAt: Date.now() });
-  if (history.length > 50) history = history.slice(0, 50);
-  localStorage.setItem('aurora_history', JSON.stringify(history));
-}
-
-// Check if favorited
-function isFavorited(id) {
-  var favorites = JSON.parse(localStorage.getItem('aurora_favorites') || '[]');
-  return favorites.some(f => f.id === id);
-}
-
-// Update all favorite buttons
-function updateFavoriteButtons() {
-  document.querySelectorAll('.fav-btn').forEach(function(btn) {
-    var id = btn.getAttribute('data-id');
-    if (isFavorited(id)) {
-      btn.textContent = '❤️';
-      btn.classList.add('favorited');
+    if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+      localStorage.setItem('aurora_admin', 'true');
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('adminPanel').style.display = 'block';
+      loadAllData();
     } else {
-      btn.textContent = '🤍';
-      btn.classList.remove('favorited');
+      document.getElementById('loginError').textContent = 'Invalid credentials!';
     }
-  });
-}
+  }
 
-// Check if downloaded
-function isDownloaded(id) {
-  var downloads = JSON.parse(localStorage.getItem('aurora_downloads') || '[]');
-  return downloads.some(d => d.id === id);
-}
+  function logout() {
+    localStorage.removeItem('aurora_admin');
+    location.reload();
+  }
 
-// Update all download buttons
-function updateDownloadButtons() {
-  document.querySelectorAll('.download-btn').forEach(function(btn) {
-    var id = btn.getAttribute('data-id');
-    if (isDownloaded(id)) {
-      btn.textContent = '✅';
-      btn.classList.add('downloaded');
-    } else {
-      btn.textContent = '⬇️';
-      btn.classList.remove('downloaded');
+  function openModal(modalId) {
+    document.getElementById(modalId).classList.add('active');
+  }
+
+  function closeModal(modalId) {
+    document.getElementById(modalId).classList.remove('active');
+    if (modalId === 'eventModal') clearEventForm();
+    if (modalId === 'alertModal') clearAlertForm();
+    if (modalId === 'podcastModal') clearPodcastForm();
+  }
+
+  function showToast(message, type = 'success') {
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+  }
+
+  function getBadgeClass(category) {
+    const classes = {
+      'event': 'badge-event',
+      'events': 'badge-event',
+      'academic': 'badge-academic',
+      'career': 'badge-career',
+      'technical': 'badge-info',
+      'cultural': 'badge-event',
+      'alert': 'badge-alert',
+      'info': 'badge-info',
+      'warning': 'badge-warning',
+      'success': 'badge-success',
+      'podcast': 'badge-podcast',
+      'announcement': 'badge-info'
+    };
+    return classes[category] || 'badge-info';
+  }
+
+  function getCategoryIcon(category) {
+    const icons = {
+      'event': '📅',
+      'events': '🎉',
+      'academic': '📚',
+      'career': '💼',
+      'technical': '💻',
+      'cultural': '🎭',
+      'alert': '🔴',
+      'info': 'ℹ️',
+      'warning': '⚠️',
+      'success': '✅',
+      'podcast': '🎙️',
+      'announcement': '📢'
+    };
+    return icons[category] || '📌';
+  }
+
+  async function saveEvent() {
+    const title = document.getElementById('eventTitle').value.trim();
+    const description = document.getElementById('eventDesc').value.trim();
+    const date = document.getElementById('eventDate').value;
+    const time = document.getElementById('eventTime').value.trim();
+    const location = document.getElementById('eventLocation').value.trim();
+    const category = document.getElementById('eventCategory').value;
+
+    if (!title || !date) {
+      showToast('Please fill in title and date', 'error');
+      return;
     }
-  });
-}
 
-function playAudio(src, btn, title, id) {
-  if (!src || src === '') {
-    showToast('Audio not available yet');
-    return;
-  }
-  
-  currentAudioFile = src;
-  currentAudioTitle = title || 'Audio';
-  currentAudioId = id || src;
-  
-  if (currentBtn && currentBtn !== btn) {
-    currentBtn.innerHTML = '▶';
-    currentBtn.classList.remove('playing');
-  }
-   
-  if (player.src && !player.paused && currentBtn === btn) {
-    player.pause();
-    btn.innerHTML = '▶';
-    btn.classList.remove('playing');
-    npPlayBtn.textContent = '▶';
-    npCover.classList.remove('playing');
-    return;
-  }
-  
-  player.src = src;
-  player.play();
-  btn.innerHTML = '⏸';
-  btn.classList.add('playing');
-  currentBtn = btn;
-  
-  npTitle.textContent = currentAudioTitle;
-  npCover.classList.add('playing');
-  npProgressBar.style.width = '0%';
-  npPlayBtn.textContent = '⏸';
-  nowPlaying.classList.add('show');
-  
-  if (isFavorited(currentAudioId)) {
-    npFavBtn.textContent = '❤️';
-    npFavBtn.classList.add('favorited');
-  } else {
-    npFavBtn.textContent = '🤍';
-    npFavBtn.classList.remove('favorited');
-  }
-  
-  addToHistory(currentAudioId, currentAudioFile, currentAudioTitle);
-}
+    const event = {
+      title,
+      description,
+      date,
+      time: time || 'TBA',
+      location: location || 'TBA',
+      category,
+      createdAt: firebase.database.ServerValue.TIMESTAMP
+    };
 
-// Legacy playAudio for backward compatibility
-function playAudioLegacy(src, btn) {
-  var title = btn.parentElement.querySelector('h4').textContent;
-  var id = src;
-  playAudio(src, btn, title, id);
-}
-
-// Toggle Favorite
-function toggleFavorite(id, file, title) {
-  if (!file) {
-    showToast('Audio not available');
-    return;
-  }
-  var favorites = JSON.parse(localStorage.getItem('aurora_favorites') || '[]');
-  var exists = favorites.find(f => f.id === id);
-  if (exists) {
-    favorites = favorites.filter(f => f.id !== id);
-    showToast('Removed from favorites');
-  } else {
-    favorites.push({ id: id, file: file, title: title, addedAt: Date.now() });
-    showToast('Added to favorites ❤️');
-  }
-  localStorage.setItem('aurora_favorites', JSON.stringify(favorites));
-  updateFavoriteButtons();
-}
-
-// Toggle Download
-function toggleDownload(id, file, title) {
-  if (!file) {
-    showToast('Audio not available');
-    return;
-  }
-  var downloads = JSON.parse(localStorage.getItem('aurora_downloads') || '[]');
-  var exists = downloads.find(d => d.id === id);
-  if (exists) {
-    downloads = downloads.filter(d => d.id !== id);
-    showToast('Removed from downloads');
-  } else {
-    downloads.push({ id: id, file: file, title: title, downloadedAt: Date.now() });
-    showToast('Downloaded ⬇️');
-  }
-  localStorage.setItem('aurora_downloads', JSON.stringify(downloads));
-  updateDownloadButtons();
-}
-
-function stopAudio() {
-  player.pause();
-  player.currentTime = 0;
-  if (currentBtn) {
-    currentBtn.innerHTML = '▶';
-    currentBtn.classList.remove('playing');
-    currentBtn = null;
-  }
-  nowPlaying.classList.remove('show');
-  npCover.classList.remove('playing');
-  npPlayBtn.textContent = '▶';
-}
-
-player.onended = function() {
-  if (currentBtn) {
-    currentBtn.innerHTML = '▶';
-    currentBtn.classList.remove('playing');
-    currentBtn = null;
-  }
-  nowPlaying.classList.remove('show');
-  npCover.classList.remove('playing');
-  npPlayBtn.textContent = '▶';
-  npProgressBar.style.width = '0%';
-};
-
-// Category Filter
-function filterCat(el, cat) {
-  document.querySelectorAll('.cat').forEach(function(c) { c.classList.remove('active'); });
-  el.classList.add('active');
-}
-
-// ==================== UPDATE TOAST SYSTEM ====================
-const APP_VERSION = '5.0';
-const UPDATE_CHECK_INTERVAL = 60000; // Check every 1 minute
-
-function checkForUpdates() {
-  try {
-    if (typeof db !== 'undefined') {
-      db.ref('appUpdates').once('value').then(function(snapshot) {
-        const updates = snapshot.val();
-        if (updates && updates.latest) {
-          const latestVersion = updates.latest.version;
-          const message = updates.latest.message || 'New update available!';
-          const lastShown = localStorage.getItem('aurora_update_shown');
-          
-          // Show update toast if newer version and not shown today
-          if (latestVersion !== APP_VERSION && lastShown !== new Date().toDateString()) {
-            showUpdateToast(message, latestVersion);
-            localStorage.setItem('aurora_update_shown', new Date().toDateString());
-          }
-        }
-      }).catch(function(e) {
-        console.log('Update check failed:', e);
-      });
+    try {
+      await db.ref('events').push(event);
+      showToast('Event saved & sent!', 'success');
+      closeModal('eventModal');
+      loadEvents();
+      updateStats();
+    } catch (e) {
+      showToast('Error saving event', 'error');
     }
-  } catch(e) {
-    console.log('Update system error:', e);
   }
-}
 
-function showUpdateToast(message, version) {
-  // Create toast element
-  const toast = document.createElement('div');
-  toast.style.cssText = 'position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, #6366f1, #a855f7); color: white; padding: 16px 24px; border-radius: 16px; z-index: 10000; box-shadow: 0 8px 30px rgba(99, 102, 241, 0.4); max-width: 90%; text-align: center; animation: slideDown 0.5s ease;';
-  toast.innerHTML = '<div style="font-size: 20px; margin-bottom: 8px;">🔔</div><div style="font-weight: 700; font-size: 15px; margin-bottom: 4px;">Update Available!</div><div style="font-size: 13px; opacity: 0.9;">' + message + '</div><div style="font-size: 11px; opacity: 0.7; margin-top: 6px;">v' + version + '</div>';
-  
-  // Add animation style
-  const style = document.createElement('style');
-  style.textContent = '@keyframes slideDown { from { opacity: 0; transform: translateX(-50%) translateY(-20px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }';
-  document.head.appendChild(style);
-  
-  document.body.appendChild(toast);
-  
-  // Auto dismiss after 5 seconds
-  setTimeout(function() {
-    toast.style.animation = 'slideUp 0.5s ease forwards';
-    setTimeout(function() {
-      if (toast.parentNode) toast.remove();
-    }, 500);
-  }, 5000);
-}
+  async function loadEvents() {
+    const container = document.getElementById('eventsList');
+    try {
+      const snapshot = await db.ref('events').once('value');
+      const data = snapshot.val();
+      if (!data) {
+        container.innerHTML = '<div class="empty-state">No events yet. Click "Add Event" to create one.</div>';
+        return;
+      }
+      const events = Object.entries(data).map(([id, ev]) => ({ id, ...ev }));
+      events.sort((a, b) => new Date(b.date) - new Date(a.date));
+      
+      document.getElementById('totalEvents').textContent = events.length;
+      
+      container.innerHTML = events.map(ev => `
+        <div class="data-item">
+          <div class="data-item-content">
+            <h4>${ev.title}</h4>
+            <p>${ev.description || 'No description'}</p>
+            <div class="meta">
+              <span class="badge ${getBadgeClass(ev.category)}">${getCategoryIcon(ev.category)} ${ev.category}</span>
+              <span class="badge badge-info">📅 ${ev.date}</span>
+              <span class="badge badge-info">⏰ ${ev.time}</span>
+              <span class="badge badge-info">📍 ${ev.location}</span>
+            </div>
+          </div>
+          <button class="delete-btn" onclick="deleteEvent('${ev.id}')">🗑️</button>
+        </div>
+      `).join('');
+    } catch (e) {
+      container.innerHTML = '<div class="empty-state">Error loading events</div>';
+    }
+  }
 
-// Add slide up animation
-const updateStyle = document.createElement('style');
-updateStyle.textContent = '@keyframes slideUp { from { opacity: 1; transform: translateX(-50%) translateY(0); } to { opacity: 0; transform: translateX(-50%) translateY(-20px); } }';
-document.head.appendChild(updateStyle);
+  async function deleteEvent(id) {
+    if (!confirm('Delete this event?')) return;
+    await db.ref('events').child(id).remove();
+    showToast('Event deleted', 'success');
+    loadEvents();
+    updateStats();
+  }
 
-// Start checking for updates on page load
-window.addEventListener('load', function() {
-  setTimeout(checkForUpdates, 3000); // Check 3 seconds after page load
-  setInterval(checkForUpdates, UPDATE_CHECK_INTERVAL); // Check periodically
-});
+  function clearEventForm() {
+    document.getElementById('eventTitle').value = '';
+    document.getElementById('eventDesc').value = '';
+    document.getElementById('eventDate').value = '';
+    document.getElementById('eventTime').value = '';
+    document.getElementById('eventLocation').value = '';
+  }
 
-// Search
-document.getElementById('searchInput').addEventListener('input', function(e) {
-  var term = e.target.value.toLowerCase();
-  document.querySelectorAll('.episode-item').forEach(function(item) {
-    var text = item.textContent.toLowerCase();
-    item.style.display = text.includes(term) ? 'flex' : 'none';
-  });
-});
+  async function sendAlert() {
+    const title = document.getElementById('alertTitle').value.trim();
+    const message = document.getElementById('alertMessage').value.trim();
+    const type = document.getElementById('alertType').value;
+    const source = document.getElementById('alertSource').value.trim();
+
+    if (!title) {
+      showToast('Please fill in title', 'error');
+      return;
+    }
+
+    const alert = {
+      title,
+      description: message,
+      type,
+      source: source || 'Admin',
+      time: 'Just now',
+      read: false,
+      createdAt: firebase.database.ServerValue.TIMESTAMP
+    };
+
+    try {
+      await db.ref('notifications').push(alert);
+      showToast('Alert sent to all users!', 'success');
+      closeModal('alertModal');
+      loadAlerts();
+      updateStats();
+    } catch (e) {
+      showToast('Error sending alert', 'error');
+    }
+  }
+
+  async function loadAlerts() {
+    const container = document.getElementById('alertsList');
+    try {
+      const snapshot = await db.ref('notifications').once('value');
+      const data = snapshot.val();
+      if (!data) {
+        container.innerHTML = '<div class="empty-state">No alerts sent yet.</div>';
+        return;
+      }
+      const alerts = Object.entries(data).map(([id, al]) => ({ id, ...al }));
+      alerts.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+      
+      document.getElementById('totalAlerts').textContent = alerts.length;
+      
+      container.innerHTML = alerts.map(al => `
+        <div class="data-item">
+          <div class="data-item-content">
+            <h4>${getCategoryIcon(al.type)} ${al.title}</h4>
+            <p>${al.description || 'No message'}</p>
+            <div class="meta">
+              <span class="badge ${getBadgeClass(al.type)}">${al.type}</span>
+              <span class="badge badge-info">📢 ${al.source}</span>
+              <span class="badge badge-info">🕐 ${al.time}</span>
+            </div>
+          </div>
+          <button class="delete-btn" onclick="deleteAlert('${al.id}')">🗑️</button>
+        </div>
+      `).join('');
+    } catch (e) {
+      container.innerHTML = '<div class="empty-state">Error loading alerts</div>';
+    }
+  }
+
+  async function deleteAlert(id) {
+    if (!confirm('Delete this alert?')) return;
+    await db.ref('notifications').child(id).remove();
+    showToast('Alert deleted', 'success');
+    loadAlerts();
+    updateStats();
+  }
+
+  function clearAlertForm() {
+    document.getElementById('alertTitle').value = '';
+    document.getElementById('alertMessage').value = '';
+    document.getElementById('alertSource').value = '';
+  }
+
+  async function savePodcast() {
+    const title = document.getElementById('podcastTitle').value.trim();
+    const description = document.getElementById('podcastDesc').value.trim();
+    const source = document.getElementById('podcastSource').value.trim();
+    const duration = document.getElementById('podcastDuration').value.trim();
+    const file = document.getElementById('podcastUrl').value.trim();
+    const category = document.getElementById('podcastCategory').value;
+
+    if (!title || !source) {
+      showToast('Please fill in title and source', 'error');
+      return;
+    }
+
+    const podcast = {
+      title,
+      description,
+      source,
+      duration: duration || '5 min',
+      file: file || 'upcoming.mp3',
+      category,
+      date: new Date().toISOString().split('T')[0],
+      createdAt: firebase.database.ServerValue.TIMESTAMP
+    };
+
+    try {
+      await db.ref('episodes').push(podcast);
+      showToast('Podcast saved!', 'success');
+      closeModal('podcastModal');
+      loadPodcasts();
+      updateStats();
+    } catch (e) {
+      showToast('Error saving podcast', 'error');
+    }
+  }
+
+  async function loadPodcasts() {
+    const container = document.getElementById('podcastsList');
+    try {
+      const snapshot = await db.ref('episodes').once('value');
+      const data = snapshot.val();
+      if (!data) {
+        container.innerHTML = '<div class="empty-state">No podcasts yet. Click "Add Podcast" to create one.</div>';
+        return;
+      }
+      const podcasts = Object.entries(data).map(([id, p]) => ({ id, ...p }));
+      podcasts.sort((a, b) => new Date(b.date) - new Date(a.date));
+      
+      document.getElementById('totalPodcasts').textContent = podcasts.length;
+      
+      container.innerHTML = podcasts.map(p => `
+        <div class="data-item">
+          <div class="data-item-content">
+            <h4>🎙️ ${p.title}</h4>
+            <p>${p.description || 'No description'}</p>
+            <div class="meta">
+              <span class="badge ${getBadgeClass(p.category)}">${p.category}</span>
+              <span class="badge badge-info">📢 ${p.source}</span>
+              <span class="badge badge-info">⏱️ ${p.duration}</span>
+              <span class="badge badge-info">📅 ${p.date}</span>
+            </div>
+          </div>
+          <button class="delete-btn" onclick="deletePodcast('${p.id}')">🗑️</button>
+        </div>
+      `).join('');
+    } catch (e) {
+      container.innerHTML = '<div class="empty-state">Error loading podcasts</div>';
+    }
+  }
+
+  async function deletePodcast(id) {
+    if (!confirm('Delete this podcast?')) return;
+    await db.ref('episodes').child(id).remove();
+    showToast('Podcast deleted', 'success');
+    loadPodcasts();
+    updateStats();
+  }
+
+  function clearPodcastForm() {
+    document.getElementById('podcastTitle').value = '';
+    document.getElementById('podcastDesc').value = '';
+    document.getElementById('podcastSource').value = '';
+    document.getElementById('podcastDuration').value = '';
+    document.getElementById('podcastUrl').value = '';
+  }
+
+  async function updateStats() {
+    try {
+      const [eventsSnap, notifsSnap, episodesSnap] = await Promise.all([
+        db.ref('events').once('value'),
+        db.ref('notifications').once('value'),
+        db.ref('episodes').once('value')
+      ]);
+      document.getElementById('totalEvents').textContent = eventsSnap.numChildren() || 0;
+      document.getElementById('totalAlerts').textContent = notifsSnap.numChildren() || 0;
+      document.getElementById('totalPodcasts').textContent = episodesSnap.numChildren() || 0;
+      document.getElementById('totalUsers').textContent = Math.floor(Math.random() * 50) + 10;
+    } catch (e) {
+      console.log('Stats error:', e);
+    }
+  }
+
+  async function loadAllData() {
+    await Promise.all([loadEvents(), loadAlerts(), loadPodcasts(), updateStats()]);
+  }
+
+  init();
 </script>
 
 </body>
