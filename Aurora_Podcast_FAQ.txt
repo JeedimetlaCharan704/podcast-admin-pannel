@@ -1,0 +1,56 @@
+================================================================================
+                    FREQUENTLY ASKED QUESTIONS (FAQ)
+            Prepare answers for these questions before presenting
+================================================================================
+
+Q1: Is the app available on iPhone/iOS?
+A: Currently, Aurora Podcast is available only for Android devices. iOS version
+   is under development and will be released soon.
+
+Q2: Is it free for all students?
+A: Yes, the app is completely free for all students and staff of Aurora
+   University.
+
+Q3: How do I get an access key?
+A: Visit the admin office in the main building with your college ID card.
+   They will provide you with a unique access key.
+
+Q4: Can I share the app with my friends outside college?
+A: No, the app is exclusively for Aurora University students and staff.
+   Only users with valid access keys can use the app.
+
+Q5: What happens to my data?
+A: We do not collect any personal data. The app only stores your listening
+   preferences locally on your device.
+
+Q6: Does the app work without internet?
+A: You need internet to download episodes and receive updates. However, once
+   downloaded, you can listen to episodes offline.
+
+Q7: How often is the app updated?
+A: The app receives automatic updates through Firebase. You don't need to
+   manually update it.
+
+Q8: Who manages the content?
+A: The college administration and designated moderators manage all content to
+   ensure accuracy and relevance.
+
+Q9: Can I suggest new features?
+A: Absolutely! We welcome suggestions. Contact the admin office or use the
+   feedback form on the app.
+
+Q10: What if I forget my access key?
+A: Visit the admin office with your ID card and they can generate a new key
+    for you.
+
+Q11: Is the app available on Google Play Store?
+A: Currently, the app is distributed through direct APK download from the
+    college website or admin office. Google Play Store listing is being planned.
+
+Q12: How much storage space does the app need?
+A: The app itself is about 33 MB. Downloads depend on how many episodes you
+    save.
+
+================================================================================
+                         END OF FAQ
+================================================================================

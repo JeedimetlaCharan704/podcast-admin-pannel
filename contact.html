@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Contact - Aurora Podcast</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#1a1a2e">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #6366f1;
+      --secondary: #a855f7;
+      --bg: #f5f7fa;
+      --card: #ffffff;
+      --text: #1a1a2e;
+      --text-light: #6b7280;
+      --border: #e5e7eb;
+    }
+    .dark-mode {
+      --bg: #0f0f23;
+      --card: #1a1a2e;
+      --text: #ffffff;
+      --text-light: #a0a0b0;
+      --border: #2a2a4a;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body { 
+      font-family: 'Poppins', sans-serif; 
+      background: var(--bg);
+      color: var(--text); 
+      padding-bottom: 90px; 
+      min-height: 100vh;
+      transition: all 0.3s ease;
+    }
+    .app { max-width: 480px; margin: 0 auto; padding: 16px; }
+    
+    header { display: flex; justify-content: space-between; align-items: center; padding: 10px 0 20px; }
+    header h1 { font-size: 24px; font-weight: 800; background: linear-gradient(135deg, #6366f1, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .header-icons { display: flex; gap: 8px; }
+    .menu-icon, .theme-icon { font-size: 26px; cursor: pointer; padding: 10px; border-radius: 14px; }
+    
+    .contact-card {
+      background: var(--card);
+      border-radius: 24px; padding: 30px;
+      margin-bottom: 20px;
+      border: 1px solid var(--border);
+      text-align: center;
+    }
+    .contact-card h3 { font-size: 20px; margin-bottom: 10px; }
+    .contact-card p { color: var(--text-light); margin-bottom: 20px; }
+    .contact-card a { 
+      display: block; padding: 16px; border-radius: 16px; 
+      text-decoration: none; font-weight: 700; margin-bottom: 12px;
+    }
+    .whatsapp { background: linear-gradient(135deg, #25D366, #20BD5A); color: white; }
+    .email { background: linear-gradient(135deg, #6366f1, #a855f7); color: white; }
+    .call { background: linear-gradient(135deg, #f59e0b, #ef4444); color: white; }
+    
+    .bottom-nav { 
+      position: fixed; bottom: 0; left: 0; right: 0; max-width: 480px; margin: auto; 
+      background: var(--card); backdrop-filter: blur(20px);
+      display: flex; justify-content: space-around; padding: 10px 8px 18px; 
+      box-shadow: 0 -10px 40px rgba(0,0,0,0.1); z-index: 100; 
+      border-radius: 24px 24px 0 0; border-top: 1px solid var(--border);
+    }
+    .nav-item { 
+      display: flex; flex-direction: column; align-items: center; gap: 4px; 
+      padding: 8px 16px; border-radius: 16px; text-decoration: none; 
+      color: var(--text-light); font-size: 10px; font-weight: 600; 
+    }
+    .nav-item.active { color: var(--primary); background: rgba(99,102,241,0.15); }
+    .nav-icon { font-size: 24px; }
+    
+    #drawer { 
+      position: fixed; top: 0; left: -300px; width: 300px; height: 100%; 
+      background: var(--card); box-shadow: 10px 0 40px rgba(0,0,0,0.2); padding: 30px; z-index: 1001;
+    }
+    #drawer.open { left: 0; }
+    #overlay { 
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0; 
+      background: rgba(0,0,0,0.5); opacity: 0; visibility: hidden; z-index: 1000;
+    }
+    #overlay.show { opacity: 1; visibility: visible; }
+  </style>
+</head>
+<body class="dark-mode">
+
+<div class="app">
+  <header>
+    <span class="menu-icon" onclick="toggleMenu()">☰</span>
+    <h1>Contact Us</h1>
+    <div class="header-icons">
+      <span class="theme-icon" onclick="toggleTheme()">☀️</span>
+    </div>
+  </header>
+
+  <div class="contact-card">
+    <h3>💬 WhatsApp</h3>
+    <p>Chat with us on WhatsApp for quick support</p>
+    <a href="https://wa.me/916305321043?text=Hello, I need help with Aurora Podcast" class="whatsapp">Open WhatsApp</a>
+  </div>
+
+  <div class="contact-card">
+    <h3>📧 Email</h3>
+    <p>Send us an email for detailed inquiries</p>
+    <a href="mailto:admin@aurora.edu.in?subject=Aurora Podcast Support" class="email">Send Email</a>
+  </div>
+
+  <div class="contact-card">
+    <h3>📞 Call</h3>
+    <p>Call us during working hours</p>
+    <a href="tel:+916305321043" class="call">Call Now</a>
+  </div>
+
+  <div class="contact-card">
+    <h3>ℹ️ About Aurora</h3>
+    <p>Aurora Podcast is your college audio platform for announcements, events, and educational content.</p>
+    <p style="margin-top:10px;font-size:12px;">Version 1.0.0</p>
+  </div>
+</div>
+
+<!-- Bottom Navigation -->
+<nav class="bottom-nav">
+  <a href="index.html" class="nav-item">🏠<br><span>Home</span></a>
+  <a href="notifications.html" class="nav-item">🔔<br><span>Alerts</span></a>
+  <a href="events.html" class="nav-item">📅<br><span>Events</span></a>
+  <a href="profile.html" class="nav-item">👤<br><span>Profile</span></a>
+</nav>
+
+<!-- Drawer -->
+<div id="drawer">
+  <div style="display:flex;align-items:center;gap:14px;margin-bottom:30px;padding-bottom:20px;border-bottom:1px solid var(--border);">
+    <div style="width:56px;height:56px;background:linear-gradient(135deg,#6366f1,#a855f7);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:28px;">🎙️</div>
+    <h3 style="font-size:20px;font-weight:700;">Aurora</h3>
+  </div>
+  <a href="index.html" style="display:block;padding:14px 0;color:var(--text);text-decoration:none;font-weight:500;">🏠 Home</a>
+  <a href="events.html" style="display:block;padding:14px 0;color:var(--text);text-decoration:none;font-weight:500;">📅 Events</a>
+  <a href="notifications.html" style="display:block;padding:14px 0;color:var(--text);text-decoration:none;font-weight:500;">🔔 Alerts</a>
+  <a href="profile.html" style="display:block;padding:14px 0;color:var(--text);text-decoration:none;font-weight:500;">👤 My Profile</a>
+  <a href="contact.html" style="display:block;padding:14px 0;color:var(--text);text-decoration:none;font-weight:500;">📞 Contact</a>
+  <a href="login.html" style="display:block;padding:14px 0;color:#ef4444;text-decoration:none;font-weight:500;margin-top:20px;">🚪 Logout</a>
+</div>
+<div id="overlay" onclick="toggleMenu()"></div>
+
+<script>
+// Theme
+function toggleTheme() {
+  var body = document.body;
+  var btns = document.querySelectorAll('.theme-icon');
+  btns.forEach(function(btn) {
+    if (body.classList.contains('dark-mode')) {
+      body.classList.remove('dark-mode');
+      body.classList.add('light-mode');
+      btn.textContent = '🌙';
+    } else {
+      body.classList.remove('light-mode');
+      body.classList.add('dark-mode');
+      btn.textContent = '☀️';
+    }
+  });
+  localStorage.setItem('aurora_theme', body.classList.contains('dark-mode') ? 'dark' : 'light');
+}
+
+// Initialize theme
+(function() {
+  var theme = localStorage.getItem('aurora_theme') || 'dark';
+  var body = document.body;
+  var btns = document.querySelectorAll('.theme-icon');
+  if (theme === 'light') {
+    body.classList.remove('dark-mode');
+    body.classList.add('light-mode');
+    btns.forEach(function(btn) { btn.textContent = '🌙'; });
+  } else {
+    body.classList.add('dark-mode');
+    btns.forEach(function(btn) { btn.textContent = '☀️'; });
+  }
+})();
+
+// Auth Check
+(function() {
+  var hasKey = localStorage.getItem('aurora_key_valid');
+  if (hasKey !== 'true') {
+    window.location.href = 'login.html';
+  }
+})();
+
+function toggleMenu() {
+  document.getElementById('drawer').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('show');
+}
+</script>
+
+</body>
+</html>

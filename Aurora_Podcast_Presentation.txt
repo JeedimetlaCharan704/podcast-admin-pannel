@@ -1,0 +1,215 @@
+AURORA PODCAST APP
+College Audio Platform Presentation
+
+================================================================================
+                         AURORA PODCAST APP
+                    Your Voice, Your College, Your Way
+================================================================================
+
+Introduction Slide
+-----------------
+Title: Aurora Podcast - Official College Audio Platform
+Subtitle: Aurora University
+
+Presenter Notes:
+"Good morning/afternoon everyone. I'm here to introduce you to Aurora Podcast -
+the official audio platform of our college. This is a modern, mobile-first app
+designed to keep all of us connected with college updates, events, and
+educational content."
+
+---
+
+Slide 2: What is Aurora Podcast?
+--------------------------------
+Title: What is Aurora Podcast?
+
+• Official college audio platform for Aurora University
+• Mobile app for instant access to announcements
+• One-stop destination for events, news & updates
+• Available on Android devices
+• Free for all students and staff
+
+Presenter Notes:
+"Aurora Podcast is our college's official audio communication platform. Think of
+it as your personal radio station for college updates. Whether you're at home,
+in the bus, or taking a walk on campus, you can stay updated with everything
+happening in college."
+
+---
+
+Slide 3: Key Features
+----------------------
+Title: Key Features
+
+📢 Instant Announcements
+   Get notified about important college notices immediately
+
+📅 Event Updates
+   Never miss any college event or fest
+
+🎓 Academic Content
+   Access study materials and academic updates
+
+🎧 Audio On-Demand
+   Listen anytime, anywhere - even offline
+
+🔔 Real-time Notifications
+   Stay informed with push notifications
+
+Presenter Notes:
+"Here are the main features. The app provides instant access to announcements
+so you never miss important notices. It has a complete events calendar for all
+college fests and activities. Academic content helps you stay on top of your
+studies. And the best part - you can download episodes and listen offline!"
+
+---
+
+Slide 4: User-Friendly Interface
+---------------------------------
+Title: Easy to Use
+
+• Simple login with college credentials
+• Clean and modern design
+• Works on any Android smartphone
+• Dark mode for comfortable viewing
+• Quick search for content
+
+Presenter Notes:
+"One of the best things about Aurora Podcast is how easy it is to use. There's
+no complicated registration - you just enter your college email and access key.
+The interface is clean and modern, similar to popular apps you already use.
+It works smoothly on any Android phone, even older ones."
+
+---
+
+Slide 5: Content Categories
+-----------------------------
+Title: What Can You Find?
+
+🎙️ Podcasts - Special episodes and interviews
+📢 Announcements - Official college notices
+📚 Academic - Study materials and exam updates
+🎉 Events - Fest schedules and registrations
+💼 Placement - Career opportunities and drives
+🏆 Achievements - College achievements and awards
+
+Presenter Notes:
+"Content is organized into different categories. Podcasts include special
+episodes and interviews with faculty and students. Announcements are official
+notices from the administration. Academic content covers study materials and
+exam updates. Events keep you updated about all college fests. Placement
+section has all career opportunities. And we celebrate college achievements too!"
+
+---
+
+Slide 6: How to Get Started
+----------------------------
+Title: Get Started in 3 Easy Steps
+
+Step 1: Download the App
+   Get the APK from the college website or admin
+
+Step 2: Enter Access Key
+   Get your access key from college admin
+
+Step 3: Start Listening!
+   Explore all content and stay updated
+
+Presenter Notes:
+"Getting started is super easy. First, you download the app file. Then you
+enter your unique access key which you'll get from the college admin office.
+That's it - you're in! No complicated forms or verification processes."
+
+---
+
+Slide 7: Benefits for Students
+-------------------------------
+Title: Why Use Aurora Podcast?
+
+✓ Stay informed about college activities
+✓ Never miss important announcements
+✓ Access content anytime, anywhere
+✓ Download for offline listening
+✓ Quick and convenient updates
+✓ Always connected with college
+
+Presenter Notes:
+"So why should you use this app? First, it keeps you informed about everything
+happening in college - from exam dates to fest registrations. You'll never miss
+an important announcement again. The content is available 24/7 so you can access
+it at your convenience. You can download episodes to listen offline - perfect for
+commuting. It's quick, convenient, and keeps you connected."
+
+---
+
+Slide 8: Technical Details
+---------------------------
+Title: App Specifications
+
+• Platform: Android
+• Size: ~33 MB (optimized)
+• Internet: Required for live updates
+• Offline: Download and listen later
+• Updates: Automatic through Firebase
+
+Presenter Notes:
+"For those interested in the technical side - the app is built for Android and
+is optimized at just 33 MB so it won't take much space on your phone. You need
+internet for the latest updates, but once downloaded, episodes work offline too.
+The app automatically updates through Firebase cloud service."
+
+---
+
+Slide 9: Security
+------------------
+Title: Safe & Secure
+
+• College-verified access only
+• No personal data collection
+• Secure Firebase infrastructure
+• Access key authentication
+• Admin-controlled content
+
+Presenter Notes:
+"Security is a top priority. Only college-verified students can access the app
+through their access keys. We don't collect any personal data. All content is
+managed by college administrators, ensuring only official and accurate
+information reaches you."
+
+---
+
+Slide 10: Contact & Support
+-----------------------------
+Title: Need Help?
+
+Admin Office: Main Building, Ground Floor
+Email: admin@aurora.edu.in
+Website: aurora.edu.in/podcast
+
+For access keys and support, contact the admin office.
+
+Presenter Notes:
+"If you need help with the app, access keys, or have any questions, please
+contact the admin office in the main building. You can also reach us through
+email or visit our website for more information."
+
+---
+
+Slide 11: Thank You
+--------------------
+Title: Thank You!
+
+Questions?
+Let's Stay Connected!
+
+Aurora Podcast
+Aurora University
+
+Presenter Notes:
+"That's all I have for today. I'm happy to answer any questions you might have
+about the Aurora Podcast app. Remember - staying connected with your college
+has never been this easy. Thank you!"
+
+================================================================================
+                         END OF PRESENTATION
+================================================================================

@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Setup Profile - Aurora Podcast</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#1e3a5f">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    :root {
+      --primary: #4f46e5;
+      --secondary: #8b5cf6;
+      --success: #10b981;
+      --danger: #ef4444;
+      --text: #1e293b;
+      --text-light: #64748b;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 50%, #4f46e5 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .setup-container {
+      background: white;
+      border-radius: 28px;
+      padding: 40px 32px;
+      width: 100%;
+      max-width: 440px;
+      box-shadow: 0 25px 80px rgba(0,0,0,0.3);
+    }
+
+    .setup-icon {
+      width: 100px;
+      height: 100px;
+      background: linear-gradient(135deg, #4f46e5, #8b5cf6, #06b6d4);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      margin: 0 auto 24px;
+    }
+
+    h1 {
+      color: var(--text);
+      font-size: 24px;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: var(--text-light);
+      font-size: 14px;
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .form-group { margin-bottom: 20px; }
+
+    .form-group label {
+      display: block;
+      font-size: 14px;
+      color: var(--text);
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 16px 18px;
+      border: 2px solid #e2e8f0;
+      border-radius: 14px;
+      font-size: 15px;
+      font-family: inherit;
+      transition: all 0.3s;
+    }
+
+    .form-group input:focus, .form-group select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 4px 20px rgba(79, 70, 229, 0.1);
+    }
+
+    .avatar-upload {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .avatar-preview {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #4f46e5, #8b5cf6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      color: white;
+      margin-bottom: 12px;
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+
+    .avatar-preview:hover { transform: scale(1.05); }
+
+    .avatar-hint {
+      font-size: 13px;
+      color: var(--text-light);
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 18px;
+      background: linear-gradient(135deg, #4f46e5, #8b5cf6);
+      color: white;
+      border: none;
+      border-radius: 14px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 4px 20px rgba(79, 70, 229, 0.3);
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(79, 70, 229, 0.4);
+    }
+
+    .skip-btn {
+      display: block;
+      text-align: center;
+      margin-top: 16px;
+      color: var(--text-light);
+      font-size: 14px;
+      cursor: pointer;
+      background: none;
+      border: none;
+    }
+
+    .skip-btn:hover { color: var(--primary); }
+
+    .error-msg {
+      color: var(--danger);
+      font-size: 13px;
+      padding: 12px;
+      background: #fee2e2;
+      border-radius: 10px;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    .success-msg {
+      color: var(--success);
+      font-size: 13px;
+      padding: 12px;
+      background: #d1fae5;
+      border-radius: 10px;
+      margin-bottom: 16px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<div class="setup-container">
+  <div class="setup-icon">👤</div>
+  <h1>Create Your Profile</h1>
+  <p class="subtitle">Tell us a bit about yourself</p>
+
+  <p class="error-msg" id="errorMsg"></p>
+  <p class="success-msg" id="successMsg"></p>
+
+  <div class="form-group">
+    <label>Full Name</label>
+    <input type="text" id="userName" placeholder="Enter your full name">
+  </div>
+
+  <div class="form-group">
+    <label>Year / Class</label>
+    <select id="userYear">
+      <option value="">Select your year</option>
+      <option value="1st Year">1st Year</option>
+      <option value="2nd Year">2nd Year</option>
+      <option value="3rd Year">3rd Year</option>
+      <option value="4th Year">4th Year</option>
+      <option value="Faculty">Faculty</option>
+      <option value="Other">Other</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label>Department (optional)</label>
+    <input type="text" id="userDept" placeholder="e.g., Computer Science">
+  </div>
+
+  <div class="form-group">
+    <label>Phone Number (optional)</label>
+    <input type="tel" id="userPhone" placeholder="+91 98765 43210">
+  </div>
+
+  <button class="submit-btn" onclick="saveProfile()">Save Profile</button>
+  
+  <button class="skip-btn" onclick="skipProfile()">Skip for now</button>
+</div>
+
+<script>
+  // Pre-fill name if available
+  const savedName = localStorage.getItem('aurora_user_name');
+  if (savedName) {
+    document.getElementById('userName').value = savedName;
+  }
+
+  // Get user ID
+  function getUserId() {
+    // For Firebase users
+    if (auth.currentUser) {
+      return auth.currentUser.uid;
+    }
+    // For key-based login
+    return localStorage.getItem('aurora_key') || 'key_user';
+  }
+
+  function showError(msg) {
+    document.getElementById('errorMsg').textContent = msg;
+    document.getElementById('errorMsg').style.display = 'block';
+  }
+
+  function showSuccess(msg) {
+    document.getElementById('successMsg').textContent = msg;
+    document.getElementById('successMsg').style.display = 'block';
+  }
+
+  function saveProfile() {
+    const name = document.getElementById('userName').value.trim();
+    const year = document.getElementById('userYear').value;
+    const dept = document.getElementById('userDept').value.trim();
+    const phone = document.getElementById('userPhone').value.trim();
+
+    if (!name) {
+      showError('Please enter your name');
+      return;
+    }
+
+    // Save locally only
+    localStorage.setItem('aurora_profile_created', 'true');
+    localStorage.setItem('aurora_user_name', name);
+    localStorage.setItem('aurora_user_year', year);
+    localStorage.setItem('aurora_user_dept', dept);
+    localStorage.setItem('aurora_user_phone', phone);
+
+    showSuccess('Profile saved! Redirecting...');
+    
+    setTimeout(() => {
+      window.location.href = 'profile.html';
+    }, 1000);
+  }
+       
+  function skipProfile() {
+    const name = localStorage.getItem('aurora_user_name') || 'User';
+    localStorage.setItem('aurora_profile_created', 'true');
+    window.location.href = 'profile.html';
+  }
+</script>
+
+</body>
+</html>

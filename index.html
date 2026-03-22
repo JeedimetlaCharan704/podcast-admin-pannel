@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Aurora Podcast</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#1a1a2e">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    :root {
+      --primary: #6366f1;
+      --primary-dark: #4f46e5;
+      --primary-light: #818cf8;
+      --secondary: #a855f7;
+      --accent: #06b6d4;
+      --gold: #f59e0b;
+      --bg: #f5f7fa;
+      --card: #ffffff;
+      --card-light: #f0f2f5;
+      --text: #1a1a2e;
+      --text-light: #6b7280;
+      --border: #e5e7eb;
+    }
+    .dark-mode {
+      --bg: #0f0f23;
+      --card: #1a1a2e;
+      --card-light: #252542;
+      --text: #ffffff;
+      --text-light: #a0a0b0;
+      --border: #2a2a4a;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body { 
+      font-family: 'Poppins', sans-serif; 
+      background: var(--bg);
+      color: var(--text); 
+      padding-bottom: 90px; 
+      min-height: 100vh;
+      transition: all 0.3s ease;
+    }
+    .app { max-width: 480px; margin: 0 auto; padding: 16px; }
+    
+    header { display: flex; justify-content: space-between; align-items: center; padding: 10px 0 20px; }
+    header h1 { font-size: 24px; font-weight: 800; background: linear-gradient(135deg, #6366f1, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .header-icons { display: flex; gap: 8px; }
+    .menu-icon, .theme-icon { font-size: 26px; cursor: pointer; padding: 10px; border-radius: 14px; transition: all 0.3s; }
+    .menu-icon:hover, .theme-icon:hover { transform: scale(1.1); }
+    
+    .welcome-card { 
+      background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #06b6d4 100%); 
+      border-radius: 24px; padding: 28px; color: white; margin-bottom: 24px;
+      box-shadow: 0 20px 50px rgba(99, 102, 241, 0.3);
+    }
+    .welcome-card h2 { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+    .welcome-card p { font-size: 14px; opacity: 0.9; }
+    
+    .categories { display: flex; gap: 12px; overflow-x: auto; padding: 8px 0 16px; scrollbar-width: none; }
+    .categories::-webkit-scrollbar { display: none; }
+    .cat { 
+      padding: 12px 22px; background: var(--card); border-radius: 24px; 
+      font-size: 13px; font-weight: 600; white-space: nowrap; cursor: pointer; 
+      transition: all 0.3s ease; border: 2px solid transparent;
+    }
+    .cat:hover { transform: translateY(-3px); }
+    .cat.active { 
+      background: linear-gradient(135deg, #6366f1, #a855f7); 
+      border-color: var(--primary-light);
+      box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
+    }
+    
+    .search-box { 
+      background: var(--card); border-radius: 18px; padding: 16px; 
+      margin-bottom: 20px; display: flex; align-items: center; gap: 12px;
+      border: 1px solid var(--border);
+    }
+    .search-box input { 
+      flex: 1; border: none; background: transparent; font-size: 15px; 
+      color: var(--text); outline: none; 
+    }
+    .search-box input::placeholder { color: var(--text-light); }
+    
+    .section-title { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; margin-top: 28px; }
+    .section-title h3 { font-size: 18px; font-weight: 700; }
+    
+    .episode-item { 
+      display: flex; align-items: center; gap: 14px; background: var(--card); 
+      padding: 16px; border-radius: 20px; margin-bottom: 14px; 
+      transition: all 0.3s ease; border: 1px solid var(--border);
+    }
+    .episode-item:hover { transform: translateY(-4px); box-shadow: 0 15px 40px rgba(0,0,0,0.1); }
+    .episode-icon { 
+      width: 58px; height: 58px; 
+      background: linear-gradient(135deg, #6366f1, #a855f7); 
+      border-radius: 18px; display: flex; align-items: center; justify-content: center; 
+      font-size: 26px; flex-shrink: 0;
+    }
+    .episode-content { flex: 1; min-width: 0; }
+    .episode-content h4 { font-size: 15px; font-weight: 600; margin-bottom: 4px; display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
+    .episode-content p { font-size: 12px; color: var(--text-light); }
+    .podcast-emoji { font-size: 22px; margin-right: 8px; }
+    .podcast-title { 
+      font-size: 15px; 
+      font-weight: 800; 
+      flex: 1;
+      background: linear-gradient(135deg, #6366f1, #a855f7, #06b6d4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 2px 10px rgba(99, 102, 241, 0.2);
+      letter-spacing: 0.3px;
+    }
+    .podcast-source {
+      font-weight: 600;
+      color: #6366f1;
+    }
+    .podcast-dot {
+      color: var(--text-light);
+      margin: 0 6px;
+    }
+    .podcast-date {
+      font-weight: 500;
+      color: #a855f7;
+    }
+    .play-btn { 
+      width: 50px; height: 50px; border-radius: 50%; border: none; 
+      background: linear-gradient(135deg, #6366f1, #a855f7); 
+      color: white; font-size: 18px; cursor: pointer; 
+      transition: all 0.3s ease;
+    }
+    .play-btn:hover { transform: scale(1.15); }
+    .play-btn.playing { animation: pulse 1s infinite; }
+    .episode-actions { display: flex; gap: 4px; align-items: center; }
+    .action-btn { width: 36px; height: 36px; border-radius: 10px; border: none; background: var(--card-light, #f0f0f0); font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .action-btn:active { transform: scale(0.95); }
+    .fav-btn, .download-btn { 
+      width: 34px; height: 34px; border-radius: 10px; border: none; 
+      background: var(--card-light, #f0f0f0); font-size: 14px; cursor: pointer; 
+      display: flex; align-items: center; justify-content: center; transition: all 0.2s;
+    }
+    .fav-btn:active, .download-btn:active { transform: scale(0.9); }
+    .fav-btn.favorited { background: rgba(239, 68, 68, 0.15); }
+    .download-btn.downloaded { background: rgba(16, 185, 129, 0.15); }
+    .loading { text-align: center; padding: 40px; color: var(--text-light); }
+    .empty-state { text-align: center; padding: 40px; color: var(--text-light); }
+    .empty-state span { font-size: 50px; display: block; margin-bottom: 15px; }
+    
+    .bottom-nav { 
+      position: fixed; bottom: 0; left: 0; right: 0; max-width: 480px; margin: auto; 
+      background: var(--card); backdrop-filter: blur(20px);
+      display: flex; justify-content: space-around; padding: 10px 8px 18px; 
+      box-shadow: 0 -10px 40px rgba(0,0,0,0.1); z-index: 100; 
+      border-radius: 24px 24px 0 0; border-top: 1px solid var(--border);
+    }
+    .nav-item { 
+      display: flex; flex-direction: column; align-items: center; gap: 4px; 
+      padding: 8px 16px; border-radius: 16px; text-decoration: none; 
+      color: var(--text-light); font-size: 10px; font-weight: 600; 
+      transition: all 0.3s ease;
+    }
+    .nav-item:hover { transform: translateY(-3px); }
+    .nav-item.active { 
+      color: var(--primary); 
+      background: rgba(99,102,241,0.15);
+    }
+    .nav-icon { font-size: 24px; }
+    
+    .now-playing { 
+      position: fixed; bottom: 85px; left: 0; right: 0; max-width: 480px; margin: auto; 
+      background: linear-gradient(135deg, #1a1a2e, #0f0f23); 
+      border-radius: 20px; padding: 16px; display: none; align-items: center; gap: 14px; 
+      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.5); z-index: 99;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .now-playing.show { display: flex; }
+    .np-cover { 
+      width: 52px; height: 52px; border-radius: 14px; 
+      background: linear-gradient(135deg, #6366f1, #a855f7); 
+      display: flex; align-items: center; justify-content: center; font-size: 24px; 
+      flex-shrink: 0;
+    }
+    .np-cover.playing { animation: rotateSpin 10s linear infinite; }
+    @keyframes rotateSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    .np-info { flex: 1; min-width: 0; }
+    .np-title { font-size: 14px; font-weight: 600; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .np-progress { 
+      height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; margin-top: 6px; overflow: hidden; 
+    }
+    .np-progress-bar { height: 100%; background: linear-gradient(90deg, #6366f1, #a855f7); border-radius: 2px; width: 0%; transition: width 0.1s; }
+    .np-time { font-size: 10px; color: rgba(255,255,255,0.6); margin-top: 4px; display: flex; justify-content: space-between; }
+    .np-controls { display: flex; gap: 8px; align-items: center; }
+    .np-btn { 
+      width: 40px; height: 40px; border-radius: 50%; border: none; 
+      background: linear-gradient(135deg, #6366f1, #a855f7); color: white; 
+      font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: transform 0.2s;
+    }
+    .np-btn:active { transform: scale(0.9); }
+    .np-btn.small { width: 32px; height: 32px; font-size: 12px; background: rgba(255,255,255,0.15); }
+    .np-fav-btn { color: white; font-size: 18px; cursor: pointer; transition: transform 0.2s; }
+    .np-fav-btn:active { transform: scale(1.2); }
+    .np-fav-btn.favorited { animation: heartBeat 0.3s; }
+    @keyframes heartBeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.3); } }
+    
+    .fav-btn { background: none; border: none; font-size: 18px; cursor: pointer; transition: transform 0.2s; }
+    .fav-btn:active { transform: scale(1.2); }
+    .fav-btn.favorited { animation: heartPop 0.3s; }
+    @keyframes heartPop { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.3); } }
+    
+    .download-btn { background: none; border: none; font-size: 16px; cursor: pointer; }
+    .download-btn.downloaded { color: #10b981; }
+    
+    .toast {
+      position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%);
+      background: linear-gradient(135deg, #10b981, #059669); color: white;
+      padding: 14px 24px; border-radius: 30px; font-size: 14px; font-weight: 500;
+      z-index: 10000; opacity: 0; transition: opacity 0.3s; pointer-events: none;
+      box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4);
+    }
+    .toast.show { opacity: 1; }
+    
+    #drawer { 
+      position: fixed; top: 0; left: -300px; width: 300px; height: 100%; 
+      background: var(--card); box-shadow: 10px 0 40px rgba(0,0,0,0.2); padding: 30px; 
+      transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1); z-index: 1001;
+    }
+    #drawer.open { left: 0; }
+    #overlay { 
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0; 
+      background: rgba(0,0,0,0.5); opacity: 0; visibility: hidden; 
+      z-index: 1000; transition: all 0.3s;
+    }
+    #overlay.show { opacity: 1; visibility: visible; }
+    
+    @keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4); } 50% { box-shadow: 0 0 0 15px rgba(99, 102, 241, 0); } }
+  </style>
+</head>
+<body class="dark-mode">
+
+
+
+<!-- Main App -->
+<div class="app">
+  <header>
+    <span class="menu-icon" onclick="toggleMenu()">☰</span>
+    <h1>Aurora</h1>
+    <div class="header-icons">
+      <span class="theme-icon" onclick="toggleTheme()" id="themeBtn">☀️</span>
+    </div>
+  </header>
+
+  <div class="welcome-card">
+    <h2 id="welcomeTitle">Welcome Back! 👋</h2>
+    <p id="welcomeSubtitle">Listen to college updates & podcasts</p>
+  </div>
+
+  <div class="categories">
+    <div class="cat active" id="catAll" onclick="filterCat(this, 'all')">✨ All</div>
+    <div class="cat" id="catNew" onclick="filterCat(this, 'new')">📢 New</div>
+    <div class="cat" id="catAcademic" onclick="filterCat(this, 'academic')">📚 Academic</div>
+    <div class="cat" id="catEvents" onclick="filterCat(this, 'events')">🎉 Events</div>
+    <div class="cat" id="catCareer" onclick="filterCat(this, 'career')">💼 Career</div>
+  </div>
+
+  <div class="search-box">
+    <span>🔍</span>
+    <input type="text" id="searchInput" id="searchPlaceholder" placeholder="Search podcasts...">
+  </div>
+
+  <div class="section-title">
+    <h3 id="sectionTitle">📻 Latest Podcasts</h3>
+  </div>
+
+  <div id="podcastsList">
+    <!-- Episodes loaded via JavaScript -->
+  </div>
+</div>
+
+<!-- Now Playing Bar -->
+<div class="now-playing" id="nowPlaying">
+  <div class="np-cover" id="npCover">🎵</div>
+  <div class="np-info">
+    <div class="np-title" id="npTitle">Not Playing</div>
+    <div class="np-progress">
+      <div class="np-progress-bar" id="npProgressBar"></div>
+    </div>
+    <div class="np-time">
+      <span id="npCurrentTime">0:00</span>
+      <span id="npDuration">0:00</span>
+    </div>
+  </div>
+  <div class="np-controls">
+    <span class="np-fav-btn" id="npFavBtn" onclick="toggleCurrentFavorite()">🤍</span>
+    <button class="np-btn" id="npPlayBtn" onclick="togglePlayPause()">▶</button>
+    <button class="np-btn small" onclick="stopAudio()">⏹</button>
+  </div>
+</div>
+
+<!-- Toast Notification -->
+<div class="toast" id="toast"></div>
+
+<!-- Bottom Navigation -->
+<nav class="bottom-nav">
+  <a href="index.html" class="nav-item active">🏠<br><span>Home</span></a>
+  <a href="notifications.html" class="nav-item">🔔<br><span>Alerts</span></a>
+  <a href="events.html" class="nav-item">📅<br><span>Events</span></a>
+  <a href="profile.html" class="nav-item">👤<br><span>Profile</span></a>
+</nav>
+
+<style>
+.credit-footer {
+  text-align: center;
+  padding: 30px 16px 120px;
+  position: relative;
+}
+.credit-glow {
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  background: linear-gradient(90deg, #6366f1, #a855f7, #06b6d4, #a855f7, #6366f1);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: creditShine 3s linear infinite;
+  text-shadow: none;
+  filter: drop-shadow(0 0 10px rgba(168, 85, 247, 0.5));
+  position: relative;
+}
+.credit-glow::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: -20px;
+  width: 15px;
+  height: 15px;
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.8), transparent);
+  border-radius: 50%;
+  animation: sideLight 2s ease-in-out infinite;
+  transform: translateY(-50%);
+}
+.credit-glow::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: -20px;
+  width: 15px;
+  height: 15px;
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.8), transparent);
+  border-radius: 50%;
+  animation: sideLight 2s ease-in-out infinite reverse;
+  transform: translateY(-50%);
+}
+.credit-sub {
+  font-size: 11px;
+  color: var(--text-light);
+  margin-top: 8px;
+  opacity: 0.7;
+}
+@keyframes creditShine {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+@keyframes sideLight {
+  0%, 100% { opacity: 0.3; transform: translateY(-50%) translateX(0); }
+  50% { opacity: 1; transform: translateY(-50%) translateX(5px); }
+}
+</style>
+
+<div class="credit-footer" id="creditFooter">
+  <div class="credit-glow" id="creditText">The Podcast App Was "Build By Charan"</div>
+  <div class="credit-sub">✨ Aurora Podcast ✨</div>
+</div>
+
+<!-- Drawer Menu -->
+<div id="drawer">
+  <div style="display:flex;align-items:center;gap:14px;margin-bottom:30px;padding-bottom:20px;border-bottom:1px solid var(--border);">
+    <div style="width:56px;height:56px;background:linear-gradient(135deg,#6366f1,#a855f7);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:28px;">🎙️</div>
+    <h3 style="font-size:20px;font-weight:700;">Aurora</h3>
+  </div>
+  <a href="index.html" style="display:block;padding:14px 0;color:var(--text);text-decoration:none;font-weight:500;font-size:15px;border-radius:12px;">🏠 Home</a>
+  <a href="events.html" style="display:block;padding:14px 0;color:var(--text);text-decoration:none;font-weight:500;font-size:15px;border-radius:12px;">📅 Events</a>
+  <a href="notifications.html" style="display:block;padding:14px 0;color:var(--text);text-decoration:none;font-weight:500;font-size:15px;border-radius:12px;">🔔 Alerts</a>
+  <a href="profile.html" style="display:block;padding:14px 0;color:var(--text);text-decoration:none;font-weight:500;font-size:15px;border-radius:12px;">👤 My Profile</a>
+  <a href="contact.html" style="display:block;padding:14px 0;color:var(--text);text-decoration:none;font-weight:500;font-size:15px;border-radius:12px;">📞 Contact</a>
+  <a href="login.html" style="display:block;padding:14px 0;color:#ef4444;text-decoration:none;font-weight:500;font-size:15px;border-radius:12px;margin-top:20px;">🚪 Logout</a>
+</div>
+<div id="overlay" onclick="toggleMenu()"></div>
+
+<audio id="player"></audio>
+
+<script>
+// Toast notification
+function showToast(message) {
+  var toast = document.getElementById('toast');
+  toast.textContent = message;
+  toast.classList.add('show');
+  setTimeout(function() { toast.classList.remove('show'); }, 2500);
+}
+
+// Format time
+function formatTime(seconds) {
+  if (!seconds || isNaN(seconds)) return '0:00';
+  var mins = Math.floor(seconds / 60);
+  var secs = Math.floor(seconds % 60);
+  return mins + ':' + (secs < 10 ? '0' : '') + secs;
+}
+
+// Theme Management
+function toggleTheme() {
+  var body = document.body;
+  var btn = document.getElementById('themeBtn');
+  if (body.classList.contains('dark-mode')) {
+    body.classList.remove('dark-mode');
+    body.classList.add('light-mode');
+    btn.textContent = '🌙';
+    localStorage.setItem('aurora_theme', 'light');
+  } else {
+    body.classList.remove('light-mode');
+    body.classList.add('dark-mode');
+    btn.textContent = '☀️';
+    localStorage.setItem('aurora_theme', 'dark');
+  }
+}
+
+// Initialize theme
+(function() {
+  var theme = localStorage.getItem('aurora_theme') || 'dark';
+  var body = document.body;
+  var btn = document.getElementById('themeBtn');
+  if (theme === 'light') {
+    body.classList.remove('dark-mode');
+    body.classList.add('light-mode');
+    btn.textContent = '🌙';
+  } else {
+    body.classList.add('dark-mode');
+    btn.textContent = '☀️';
+  }
+})();
+
+// App Init
+(function() {
+  // Request notification permission
+  if (typeof requestNotificationPermission === 'function') {
+    requestNotificationPermission();
+  }
+  
+  // Load all texts from Firebase
+  loadAppTexts();
+  loadCreditText();
+  
+  // Check for event reminders and notifications (non-blocking)
+  setTimeout(function() {
+    checkEventReminders();
+    checkFirebaseNotifications();
+  }, 1000);
+})();
+
+// Load credit text from Firebase
+async function loadCreditText() {
+  var creditText = document.getElementById('creditText');
+  if (!creditText) return;
+  
+  // Default text
+  var defaultText = 'The Podcast App Was "Build By Charan"';
+  
+  try {
+    if (typeof db !== 'undefined' && db) {
+      var snapshot = await db.ref('appSettings/creditText').once('value');
+      var text = snapshot.val();
+      if (text && text.message) {
+        creditText.textContent = text.message;
+      } else {
+        creditText.textContent = defaultText;
+      }
+    } else {
+      creditText.textContent = defaultText;
+    }
+  } catch(e) {
+    console.log('Error loading credit text:', e);
+    creditText.textContent = defaultText;
+  }
+}
+
+// Load all app texts from Firebase
+async function loadAppTexts() {
+  var defaultTexts = {
+    appName: 'Aurora',
+    splashLogo: '🎙️',
+    splashTitle: 'Aurora',
+    welcomeTitle: 'Welcome Back! 👋',
+    welcomeSubtitle: 'Listen to college updates & podcasts',
+    searchPlaceholder: 'Search podcasts...',
+    sectionTitle: '📻 Latest Podcasts',
+    catAll: '✨ All',
+    catNew: '📢 New',
+    catAcademic: '📚 Academic',
+    catEvents: '🎉 Events',
+    catCareer: '💼 Career',
+    creditText: 'The Podcast App Was "Build By Charan"',
+    creditSub: '✨ Aurora Podcast ✨'
+  };
+  
+  try {
+    if (typeof db !== 'undefined' && db) {
+      var snapshot = await db.ref('appSettings/texts').once('value');
+      var texts = snapshot.val();
+      
+      if (texts) {
+        Object.keys(texts).forEach(function(key) {
+          var el = document.getElementById(key);
+          if (el) {
+            el.textContent = texts[key];
+          }
+        });
+        
+        // Cache locally
+        localStorage.setItem('aurora_app_texts', JSON.stringify(texts));
+        localStorage.setItem('aurora_texts_timestamp', Date.now().toString());
+      } else {
+        // Use cached texts if available
+        var cached = localStorage.getItem('aurora_app_texts');
+        if (cached) {
+          var cachedTexts = JSON.parse(cached);
+          Object.keys(cachedTexts).forEach(function(key) {
+            var el = document.getElementById(key);
+            if (el) {
+              el.textContent = cachedTexts[key];
+            }
+          });
+        }
+      }
+    }
+  } catch(e) {
+    console.log('Error loading app texts:', e);
+    // Fallback to cached
+    var cached = localStorage.getItem('aurora_app_texts');
+    if (cached) {
+      var cachedTexts = JSON.parse(cached);
+      Object.keys(cachedTexts).forEach(function(key) {
+        var el = document.getElementById(key);
+        if (el) {
+          el.textContent = cachedTexts[key];
+        }
+      });
+    }
+  }
+}
+
+// Check for upcoming events and show notification
+async function checkEventReminders() {
+  if (typeof FirebaseService === 'undefined') return;
+  
+  try {
+    var events = await FirebaseService.getEvents();
+    var now = new Date();
+    now.setHours(0, 0, 0, 0);
+    
+    var tomorrow = new Date(now);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    
+    var dayAfter = new Date(tomorrow);
+    dayAfter.setDate(dayAfter.getDate() + 1);
+    
+    // Check for events tomorrow (1 day before reminder)
+    var tomorrowKey = 'aurora_reminder_tomorrow';
+    if (!localStorage.getItem(tomorrowKey)) {
+      var tomorrowEvents = events.filter(function(ev) {
+        var eventDate = new Date(ev.date);
+        eventDate.setHours(0, 0, 0, 0);
+        return eventDate.getTime() === tomorrow.getTime();
+      });
+      
+      if (tomorrowEvents.length > 0) {
+        var eventNames = tomorrowEvents.map(function(e) { return e.title; }).join(', ');
+        showToast('📅 Event tomorrow: ' + eventNames);
+        localStorage.setItem(tomorrowKey, 'true');
+        
+        // Show browser notification if permitted
+        if (typeof showLocalNotification === 'function') {
+          showLocalNotification('Aurora Podcast', 'Event tomorrow: ' + eventNames);
+        }
+      }
+    }
+    
+    // Check for events today
+    var todayKey = 'aurora_reminder_today_' + now.toISOString().split('T')[0];
+    if (!localStorage.getItem(todayKey)) {
+      var todayEvents = events.filter(function(ev) {
+        var eventDate = new Date(ev.date);
+        eventDate.setHours(0, 0, 0, 0);
+        return eventDate.getTime() === now.getTime();
+      });
+      
+      if (todayEvents.length > 0) {
+        var eventNames = todayEvents.map(function(e) { return e.title; }).join(', ');
+        showToast('📅 Today: ' + eventNames);
+        localStorage.setItem(todayKey, 'true');
+      }
+    }
+  } catch(e) {
+    console.log('Error checking reminders:', e);
+  }
+}
+
+// Check for Firebase notifications
+async function checkFirebaseNotifications() {
+  if (typeof FirebaseService === 'undefined' || typeof db === 'undefined') return;
+  
+  try {
+    var deviceId = localStorage.getItem('aurora_device_id') || 'unknown';
+    var notifSnapshot = await db.ref('notifications').orderByChild('target').equalTo(deviceId).once('value');
+    var notifs = notifSnapshot.val();
+    
+    if (notifs) {
+      var latestNotifKey = localStorage.getItem('aurora_latest_notif');
+      Object.keys(notifs).forEach(function(key) {
+        if (key !== latestNotifKey) {
+          var notif = notifs[key];
+          showToast(notif.title || 'New notification');
+          
+          if (typeof showLocalNotification === 'function') {
+            showLocalNotification(notif.title || 'Aurora Podcast', notif.body || 'You have a new notification');
+          }
+        }
+      });
+      
+      var keys = Object.keys(notifs);
+      if (keys.length > 0) {
+        localStorage.setItem('aurora_latest_notif', keys[keys.length - 1]);
+      }
+    }
+  } catch(e) {
+    console.log('Error checking notifications:', e);
+  }
+}
+
+// Toggle Menu
+function toggleMenu() {
+  document.getElementById('drawer').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('show');
+}
+
+// Load Episodes
+function loadEpisodesFromFirebase() {
+  var container = document.getElementById('podcastsList');
+  if (!container) return;
+  
+  var episodes = [
+    { id: 'autoexpo', title: 'AUTO EXPO 🏍️', source: 'Events Committee', date: '25 MAR', file: 'AUDIOS/AUTO EXPO MAR25.mpeg', category: 'events' },
+    { id: 'anvithi', title: 'ANVITHI 2026 💥', source: 'Admin Office', date: '24 MAR', file: 'AUDIOS/ANVITHI2026.mpeg', category: 'announcement' },
+    { id: 'sangama_success', title: 'SANGAMA SUCCESS', source: 'Exam Cell', date: '23 MAR', file: 'AUDIOS/SANGAMASUCCESS.mpeg', category: 'academic' },
+    { id: 'sangama2026', title: 'SANGAMA 2026', source: 'Events Committee', date: '22 MAR', file: 'AUDIOS/SANGAMA.mpeg', category: 'events' },
+    { id: 'rules', title: 'Rules and Regulations', source: 'Admin Office', date: '21 MAR', file: 'AUDIOS/rules.mp3', category: 'announcement' }
+  ];
+  
+  var html = '';
+  episodes.forEach(function(ep) {
+    var epId = ep.id || ep.title;
+    var epFile = ep.file || '';
+    var epTitle = ep.title || 'Untitled';
+    var epSource = ep.source || 'Aurora';
+    var epDate = ep.date || 'Recently';
+    
+    var icon = '🎙️';
+    var emoji = '🎙️';
+    if (epTitle.includes('AUTO EXPO')) { icon = '🏍️'; emoji = '🏍️'; }
+    else if (epTitle.includes('ANVITHI')) { icon = '💥'; emoji = '💥'; }
+    else if (epTitle.includes('SANGAMA SUCCESS')) { icon = '🎉'; emoji = '🎉'; }
+    else if (epTitle.includes('SANGAMA 2026')) { icon = '🏆'; emoji = '🏆'; }
+    else if (epTitle.includes('Rules')) { icon = '📜'; emoji = '📜'; }
+    else if (ep.category === 'announcement') { icon = '📢'; emoji = '📢'; }
+    else if (ep.category === 'academic') { icon = '📚'; emoji = '📚'; }
+    else if (ep.category === 'placement') { icon = '💼'; emoji = '💼'; }
+    else if (ep.category === 'events') { icon = '🎊'; emoji = '🎊'; }
+    
+    var displayTitle = '<span class="podcast-title">' + epTitle + '</span>';
+    var displayMeta = '<span class="podcast-source">' + epSource + '</span> <span class="podcast-dot">•</span> <span class="podcast-date">' + epDate + '</span>';
+    
+    html += '<div class="episode-item">' +
+      '<div class="episode-icon">' + icon + '</div>' +
+      '<div class="episode-content">' +
+        '<h4>' + displayTitle + '</h4>' +
+        '<p>' + displayMeta + '</p>' +
+      '</div>' +
+      '<span class="episode-right-emoji">' + emoji + '</span>' +
+      '<div class="episode-actions">' +
+        '<button class="fav-btn" data-id="' + epId + '" onclick="toggleFavorite(\'' + epId + '\',\'' + epFile + '\',\'' + epTitle + '\')" title="Favorite">🤍</button>' +
+        '<button class="download-btn" data-id="' + epId + '" onclick="toggleDownload(\'' + epId + '\',\'' + epFile + '\',\'' + epTitle + '\')" title="Download">⬇️</button>' +
+        '<button class="play-btn" onclick="playAudio(\'' + epFile + '\', this, \'' + epTitle + '\', \'' + epId + '\')">▶</button>' +
+      '</div>' +
+    '</div>';
+  });
+  
+  container.innerHTML = html;
+  updateFavoriteButtons();
+  updateDownloadButtons();
+}
+
+// Load episodes on page load
+document.addEventListener('DOMContentLoaded', function() {
+  // Load episodes
+  loadEpisodesFromFirebase();
+  updateFavoriteButtons();
+  updateDownloadButtons();
+});
+
+// Audio Player
+var player = document.getElementById('player');
+var nowPlaying = document.getElementById('nowPlaying');
+var npTitle = document.getElementById('npTitle');
+var npCover = document.getElementById('npCover');
+var npProgressBar = document.getElementById('npProgressBar');
+var npCurrentTime = document.getElementById('npCurrentTime');
+var npDuration = document.getElementById('npDuration');
+var npPlayBtn = document.getElementById('npPlayBtn');
+var npFavBtn = document.getElementById('npFavBtn');
+var currentBtn = null;
+var currentAudioFile = '';
+var currentAudioTitle = '';
+var currentAudioId = '';
+
+// Update progress
+player.ontimeupdate = function() {
+  if (player.duration) {
+    var percent = (player.currentTime / player.duration) * 100;
+    npProgressBar.style.width = percent + '%';
+    npCurrentTime.textContent = formatTime(player.currentTime);
+    npDuration.textContent = formatTime(player.duration);
+  }
+};
+
+// Toggle Play/Pause
+function togglePlayPause() {
+  if (player.paused) {
+    player.play();
+    npPlayBtn.textContent = '⏸';
+    npCover.classList.add('playing');
+  } else {
+    player.pause();
+    npPlayBtn.textContent = '▶';
+    npCover.classList.remove('playing');
+  }
+}
+
+// Toggle current favorite from mini player
+function toggleCurrentFavorite() {
+  if (!currentAudioId) return;
+  var favorites = JSON.parse(localStorage.getItem('aurora_favorites') || '[]');
+  var exists = favorites.find(f => f.id === currentAudioId);
+  if (exists) {
+    favorites = favorites.filter(f => f.id !== currentAudioId);
+    npFavBtn.textContent = '🤍';
+    npFavBtn.classList.remove('favorited');
+    showToast('Removed from favorites');
+  } else {
+    favorites.push({ id: currentAudioId, file: currentAudioFile, title: currentAudioTitle, addedAt: Date.now() });
+    npFavBtn.textContent = '❤️';
+    npFavBtn.classList.add('favorited');
+    showToast('Added to favorites ❤️');
+  }
+  localStorage.setItem('aurora_favorites', JSON.stringify(favorites));
+  updateFavoriteButtons();
+}
+
+// Add to history
+function addToHistory(id, file, title) {
+  var history = JSON.parse(localStorage.getItem('aurora_history') || '[]');
+  history = history.filter(h => h.id !== id);
+  history.unshift({ id: id, file: file, title: title, playedAt: Date.now() });
+  if (history.length > 50) history = history.slice(0, 50);
+  localStorage.setItem('aurora_history', JSON.stringify(history));
+}
+
+// Check if favorited
+function isFavorited(id) {
+  var favorites = JSON.parse(localStorage.getItem('aurora_favorites') || '[]');
+  return favorites.some(f => f.id === id);
+}
+
+// Update all favorite buttons
+function updateFavoriteButtons() {
+  document.querySelectorAll('.fav-btn').forEach(function(btn) {
+    var id = btn.getAttribute('data-id');
+    if (isFavorited(id)) {
+      btn.textContent = '❤️';
+      btn.classList.add('favorited');
+    } else {
+      btn.textContent = '🤍';
+      btn.classList.remove('favorited');
+    }
+  });
+}
+
+// Check if downloaded
+function isDownloaded(id) {
+  var downloads = JSON.parse(localStorage.getItem('aurora_downloads') || '[]');
+  return downloads.some(d => d.id === id);
+}
+
+// Update all download buttons
+function updateDownloadButtons() {
+  document.querySelectorAll('.download-btn').forEach(function(btn) {
+    var id = btn.getAttribute('data-id');
+    if (isDownloaded(id)) {
+      btn.textContent = '✅';
+      btn.classList.add('downloaded');
+    } else {
+      btn.textContent = '⬇️';
+      btn.classList.remove('downloaded');
+    }
+  });
+}
+
+function playAudio(src, btn, title, id) {
+  if (!src || src === '') {
+    showToast('Audio not available yet');
+    return;
+  }
+  
+  currentAudioFile = src;
+  currentAudioTitle = title || 'Audio';
+  currentAudioId = id || src;
+  
+  if (currentBtn && currentBtn !== btn) {
+    currentBtn.innerHTML = '▶';
+    currentBtn.classList.remove('playing');
+  }
+   
+  if (player.src && !player.paused && currentBtn === btn) {
+    player.pause();
+    btn.innerHTML = '▶';
+    btn.classList.remove('playing');
+    npPlayBtn.textContent = '▶';
+    npCover.classList.remove('playing');
+    return;
+  }
+  
+  player.src = src;
+  player.play();
+  btn.innerHTML = '⏸';
+  btn.classList.add('playing');
+  currentBtn = btn;
+  
+  npTitle.textContent = currentAudioTitle;
+  npCover.classList.add('playing');
+  npProgressBar.style.width = '0%';
+  npPlayBtn.textContent = '⏸';
+  nowPlaying.classList.add('show');
+  
+  if (isFavorited(currentAudioId)) {
+    npFavBtn.textContent = '❤️';
+    npFavBtn.classList.add('favorited');
+  } else {
+    npFavBtn.textContent = '🤍';
+    npFavBtn.classList.remove('favorited');
+  }
+  
+  addToHistory(currentAudioId, currentAudioFile, currentAudioTitle);
+}
+
+// Legacy playAudio for backward compatibility
+function playAudioLegacy(src, btn) {
+  var title = btn.parentElement.querySelector('h4').textContent;
+  var id = src;
+  playAudio(src, btn, title, id);
+}
+
+// Toggle Favorite
+function toggleFavorite(id, file, title) {
+  if (!file) {
+    showToast('Audio not available');
+    return;
+  }
+  var favorites = JSON.parse(localStorage.getItem('aurora_favorites') || '[]');
+  var exists = favorites.find(f => f.id === id);
+  if (exists) {
+    favorites = favorites.filter(f => f.id !== id);
+    showToast('Removed from favorites');
+  } else {
+    favorites.push({ id: id, file: file, title: title, addedAt: Date.now() });
+    showToast('Added to favorites ❤️');
+  }
+  localStorage.setItem('aurora_favorites', JSON.stringify(favorites));
+  updateFavoriteButtons();
+}
+
+// Toggle Download
+function toggleDownload(id, file, title) {
+  if (!file) {
+    showToast('Audio not available');
+    return;
+  }
+  var downloads = JSON.parse(localStorage.getItem('aurora_downloads') || '[]');
+  var exists = downloads.find(d => d.id === id);
+  if (exists) {
+    downloads = downloads.filter(d => d.id !== id);
+    showToast('Removed from downloads');
+  } else {
+    downloads.push({ id: id, file: file, title: title, downloadedAt: Date.now() });
+    showToast('Downloaded ⬇️');
+  }
+  localStorage.setItem('aurora_downloads', JSON.stringify(downloads));
+  updateDownloadButtons();
+}
+
+function stopAudio() {
+  player.pause();
+  player.currentTime = 0;
+  if (currentBtn) {
+    currentBtn.innerHTML = '▶';
+    currentBtn.classList.remove('playing');
+    currentBtn = null;
+  }
+  nowPlaying.classList.remove('show');
+  npCover.classList.remove('playing');
+  npPlayBtn.textContent = '▶';
+}
+
+player.onended = function() {
+  if (currentBtn) {
+    currentBtn.innerHTML = '▶';
+    currentBtn.classList.remove('playing');
+    currentBtn = null;
+  }
+  nowPlaying.classList.remove('show');
+  npCover.classList.remove('playing');
+  npPlayBtn.textContent = '▶';
+  npProgressBar.style.width = '0%';
+};
+
+// Category Filter
+function filterCat(el, cat) {
+  document.querySelectorAll('.cat').forEach(function(c) { c.classList.remove('active'); });
+  el.classList.add('active');
+}
+
+// ==================== UPDATE TOAST SYSTEM ====================
+const APP_VERSION = '5.0';
+const UPDATE_CHECK_INTERVAL = 60000; // Check every 1 minute
+
+function checkForUpdates() {
+  try {
+    if (typeof db !== 'undefined') {
+      db.ref('appUpdates').once('value').then(function(snapshot) {
+        const updates = snapshot.val();
+        if (updates && updates.latest) {
+          const latestVersion = updates.latest.version;
+          const message = updates.latest.message || 'New update available!';
+          const lastShown = localStorage.getItem('aurora_update_shown');
+          
+          // Show update toast if newer version and not shown today
+          if (latestVersion !== APP_VERSION && lastShown !== new Date().toDateString()) {
+            showUpdateToast(message, latestVersion);
+            localStorage.setItem('aurora_update_shown', new Date().toDateString());
+          }
+        }
+      }).catch(function(e) {
+        console.log('Update check failed:', e);
+      });
+    }
+  } catch(e) {
+    console.log('Update system error:', e);
+  }
+}
+
+function showUpdateToast(message, version) {
+  // Create toast element
+  const toast = document.createElement('div');
+  toast.style.cssText = 'position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, #6366f1, #a855f7); color: white; padding: 16px 24px; border-radius: 16px; z-index: 10000; box-shadow: 0 8px 30px rgba(99, 102, 241, 0.4); max-width: 90%; text-align: center; animation: slideDown 0.5s ease;';
+  toast.innerHTML = '<div style="font-size: 20px; margin-bottom: 8px;">🔔</div><div style="font-weight: 700; font-size: 15px; margin-bottom: 4px;">Update Available!</div><div style="font-size: 13px; opacity: 0.9;">' + message + '</div><div style="font-size: 11px; opacity: 0.7; margin-top: 6px;">v' + version + '</div>';
+  
+  // Add animation style
+  const style = document.createElement('style');
+  style.textContent = '@keyframes slideDown { from { opacity: 0; transform: translateX(-50%) translateY(-20px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }';
+  document.head.appendChild(style);
+  
+  document.body.appendChild(toast);
+  
+  // Auto dismiss after 5 seconds
+  setTimeout(function() {
+    toast.style.animation = 'slideUp 0.5s ease forwards';
+    setTimeout(function() {
+      if (toast.parentNode) toast.remove();
+    }, 500);
+  }, 5000);
+}
+
+// Add slide up animation
+const updateStyle = document.createElement('style');
+updateStyle.textContent = '@keyframes slideUp { from { opacity: 1; transform: translateX(-50%) translateY(0); } to { opacity: 0; transform: translateX(-50%) translateY(-20px); } }';
+document.head.appendChild(updateStyle);
+
+// Start checking for updates on page load
+window.addEventListener('load', function() {
+  setTimeout(checkForUpdates, 3000); // Check 3 seconds after page load
+  setInterval(checkForUpdates, UPDATE_CHECK_INTERVAL); // Check periodically
+});
+
+// Search
+document.getElementById('searchInput').addEventListener('input', function(e) {
+  var term = e.target.value.toLowerCase();
+  document.querySelectorAll('.episode-item').forEach(function(item) {
+    var text = item.textContent.toLowerCase();
+    item.style.display = text.includes(term) ? 'flex' : 'none';
+  });
+});
+</script>
+
+</body>
+</html>

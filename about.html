@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>About - Aurora Podcast</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1e3a5f">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <canvas id="particles-canvas"></canvas>
+  <style>
+    #splash { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(160deg, #1e3a5f 0%, #0f172a 50%, #1e3a5f 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; transition: opacity 0.6s ease, transform 0.6s ease; }
+    #splash.hidden { opacity: 0; transform: scale(1.1); pointer-events: none; }
+    .splash-content { text-align: center; animation: fadeInUp 0.8s ease forwards; }
+    .splash-logo { width: 100px; height: 100px; background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); border-radius: 24px; display: flex; align-items: center; justify-content: center; font-size: 48px; margin: 0 auto 20px; box-shadow: 0 20px 40px rgba(59, 130, 246, 0.4); animation: float 3s ease-in-out infinite, scaleIn 0.5s ease forwards; }
+    .splash-title { color: white; font-size: 26px; font-weight: 700; margin-bottom: 6px; letter-spacing: -0.5px; animation: fadeIn 0.8s ease 0.2s forwards; opacity: 0; }
+    .splash-subtitle { color: rgba(255,255,255,0.6); font-size: 13px; letter-spacing: 1px; text-transform: uppercase; animation: fadeIn 0.8s ease 0.4s forwards; opacity: 0; }
+
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+    @keyframes scaleIn { 0% { transform: scale(0); opacity: 0; } 50% { transform: scale(1.1); } 100% { transform: scale(1); opacity: 1; } }
+    @keyframes fadeInUp { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { 0% { opacity: 0; } 100% { opacity: 1; } }
+    @keyframes progress { 0% { width: 0%; } 100% { width: 100%; } }
+    @media (max-width: 420px) { .splash-logo { width: 80px; height: 80px; font-size: 36px; border-radius: 20px; } .splash-title { font-size: 22px; } .splash-subtitle { font-size: 11px; } }
+    @media (max-width: 380px) { .splash-logo { width: 70px; height: 70px; font-size: 32px; border-radius: 18px; } .splash-title { font-size: 20px; } .splash-subtitle { font-size: 10px; } }
+  </style>
+</head>
+
+<body>
+
+<div id="splash">
+  <div class="splash-content">
+    <div class="splash-logo">🎙️</div>
+    <div class="splash-title">Aurora Podcast</div>
+    <div class="splash-subtitle">College Audio Platform</div>
+
+  </div>
+</div>
+
+<script>
+  // Immediate auth check
+  (function() {
+    const hasKey = localStorage.getItem('aurora_key_valid');
+    const keyExpiry = localStorage.getItem('aurora_key_expiry');
+    if (hasKey !== 'true' || (keyExpiry && Date.now() > parseInt(keyExpiry))) {
+      window.location.href = 'login.html';
+      return;
+    }
+  })();
+  
+  const splashShown = sessionStorage.getItem('aurora_splash_shown');
+  const splash = document.getElementById('splash');
+  
+  if (!splashShown) {
+    sessionStorage.setItem('aurora_splash_shown', 'true');
+    setTimeout(() => {
+      splash.classList.add('hidden');
+    }, 2000);
+  } else {
+    splash.style.display = 'none';
+  }
+  
+  function checkAuth() {
+    const hasKey = localStorage.getItem('aurora_key_valid');
+    const keyExpiry = localStorage.getItem('aurora_key_expiry');
+    
+    if (hasKey !== 'true') {
+      window.location.href = 'login.html';
+      return;
+    }
+    
+    if (keyExpiry && Date.now() > parseInt(keyExpiry)) {
+      localStorage.removeItem('aurora_key_valid');
+      localStorage.removeItem('aurora_key');
+      localStorage.removeItem('aurora_key_expiry');
+      localStorage.removeItem('aurora_user_name');
+      localStorage.removeItem('aurora_profile_created');
+      alert('Your access key has expired. Please contact admin for a new key.');
+      window.location.href = 'login.html';
+    }
+  }
+  
+  // Run auth check
+  checkAuth();
+    
+    if (keyExpiry && Date.now() > parseInt(keyExpiry)) {
+      localStorage.removeItem('aurora_key_valid');
+      localStorage.removeItem('aurora_key');
+      localStorage.removeItem('aurora_key_expiry');
+      localStorage.removeItem('aurora_user_name');
+      localStorage.removeItem('aurora_profile_created');
+      alert('Your access key has expired. Please contact admin for a new key.');
+      window.location.href = 'login.html';
+    }
+  }
+  
+  function toggleMenu() {
+    document.getElementById('drawer').classList.toggle('open');
+    document.getElementById('overlay').classList.toggle('active');
+  }
+  
+  function toggleDark() {
+    document.body.classList.toggle('dark');
+    const isDark = document.body.classList.contains('dark');
+    localStorage.setItem('aurora_dark', isDark);
+    const settings = JSON.parse(localStorage.getItem('aurora_settings') || '{"darkMode": false}');
+    settings.darkMode = isDark;
+    localStorage.setItem('aurora_settings', JSON.stringify(settings));
+  }
+  
+  const storedDark = localStorage.getItem('aurora_dark');
+  const settings = JSON.parse(localStorage.getItem('aurora_settings') || '{"darkMode": false}');
+  if (storedDark === 'true' || settings.darkMode) {
+    document.body.classList.add('dark');
+  }
+</script>
+
+<div id="drawer" class="drawer">
+  <div class="drawer-header">
+    <div class="logo">🎙️</div>
+    <h3>Aurora Podcast</h3>
+  </div>
+  <a href="index.html">Home</a>
+  <a href="events.html">Events</a>
+  <a href="notifications.html">Alerts</a>
+  <a href="downloads.html">Downloads</a>
+  <a href="profile.html">Profile</a>
+  <a href="about.html" class="active">About</a>
+  <a href="contact.html">Contact</a>
+</div>
+
+<div id="overlay" class="overlay" onclick="toggleMenu()"></div>
+
+<div class="app">
+
+  <header>
+    <span class="menu" onclick="toggleMenu()">☰</span>
+    <h1>About</h1>
+    <span class="theme" onclick="toggleDark()">🌙</span>
+  </header>
+
+  <div class="welcome-card">
+    <div class="welcome-content">
+      <h2>Aurora Podcast</h2>
+      <p>Your College Audio Platform</p>
+    </div>
+    <div class="welcome-icon">🎙️</div>
+  </div>
+
+  <div class="card">
+    <h3>About the App</h3>
+    <p style="font-family: 'Times New Roman', serif; line-height: 1.6;">Aurora Podcast is the official audio platform of Aurora University, designed to keep students informed and engaged with the latest college updates, announcements, and educational content. Our platform provides easy access to important notices, audio lectures, event schedules, and more - all in one convenient location.</p>
+  </div>
+
+  <div class="card">
+    <h3>Our Mission</h3>
+    <p style="font-family: 'Times New Roman', serif; line-height: 1.6;">We aim to bridge the communication gap between the college administration and students by delivering timely updates and valuable educational content through an intuitive audio platform. Aurora Podcast ensures that no important information goes unnoticed.</p>
+  </div>
+
+  <div class="card">
+    <h3>Key Features</h3>
+    <p style="font-family: 'Times New Roman', serif;">• College announcements and important notices<br>
+    • Audio lectures and study materials<br>
+    • Event updates and schedules<br>
+    • Career guidance and placement updates<br>
+    • Student stories and interviews</p>
+  </div>
+
+  <div class="card">
+    <h3>Statistics</h3>
+    <p style="font-family: 'Times New Roman', serif;">45+ Episodes | 1.2K+ Active Users | 10K+ Total Plays</p>
+  </div>
+
+  <div class="card">
+    <h3>Contact</h3>
+    <p style="font-family: 'Times New Roman', serif;">For queries and feedback: info@aurora.edu.in</p>
+  </div>
+
+  <footer>
+    Aurora Podcast v2.0<br>
+    Developed by Charan | Aurora Tech
+  </footer>
+
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="firebase-init.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
