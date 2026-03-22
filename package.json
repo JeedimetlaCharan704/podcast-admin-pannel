@@ -1,0 +1,19 @@
+{
+  "name": "aurora-podcast",
+  "version": "4.0.0",
+  "description": "Aurora Podcast App with Firebase Integration",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve",
+    "build": "npx cap sync android",
+    "android": "npx cap open android",
+    "build:web": "npx cap copy",
+    "build:android": "cd android && ./gradlew assembleDebug"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@capacitor/android": "^5.7.0",
+    "@capacitor/cli": "^5.7.0",
+    "@capacitor/core": "^5.7.0"
+  }
+}

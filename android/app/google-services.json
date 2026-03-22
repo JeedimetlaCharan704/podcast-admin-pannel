@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "988666865867",
+    "project_id": "college-podcast",
+    "storage_bucket": "college-podcast.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:988666865867:android:dedc4ace9107437ce9134e",
+        "android_client_info": {
+          "package_name": "com.aurora.podcast"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBjWiZR4jwf7IYKR7y2xir1CUmTI0vzm8Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
